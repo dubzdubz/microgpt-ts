@@ -1,5 +1,6 @@
 import type { Tokenizer } from './data';
 import { type StateDict, bigram } from './model';
+import { mean } from './utils';
 
 export function train(stateDict: StateDict, docs: string[], tokenizer: Tokenizer, numSteps: number) {
   for (let step = 0; step < numSteps; step++) {
@@ -12,7 +13,7 @@ export function train(stateDict: StateDict, docs: string[], tokenizer: Tokenizer
       const probs = bigram(stateDict, tokenId);
       return -Math.log(probs[targetId]);
     });
-    const loss = losses.reduce((a, b) => a + b, 0) / losses.length;
+    const loss = mean(losses);
 
     // Update stateDict with the bigram counts from this document
     tokens.slice(0, -1).forEach((tokenId, posId) => {

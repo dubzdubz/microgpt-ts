@@ -1,6 +1,6 @@
 // Bigram language model: state_dict[i][j] = how many times token j follows token i
 import type { Tokenizer } from './data';
-import { sample } from './utils';
+import { sample, sum } from './utils';
 
 const MAX_OUTPUT_LENGTH = 16;
 export type StateDict = number[][];
@@ -15,7 +15,7 @@ export function initStateDict(vocabSize: number): StateDict {
 export function bigram(stateDict: StateDict, tokenId: number): number[] {
   const row = stateDict[tokenId];
   // Add-one smoothing: add 1 to each count and divide by total + vocabSize
-  const total = row.reduce((a, b) => a + b, 0) + row.length;
+  const total = sum(row) + row.length;
   return row.map((c) => (c + 1) / total);
 }
 
