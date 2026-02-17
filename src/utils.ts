@@ -26,6 +26,16 @@ export function randomGaussian(mean = 0, std = 1): number {
   return mean + std * z;
 }
 
+// Random nout x nin matrix with Gaussian-distributed values
+export const gaussianMatrix = (
+  nout: number,
+  nin: number,
+  std = 0.08,
+): number[][] =>
+  Array.from({ length: nout }, () =>
+    Array.from({ length: nin }, () => randomGaussian(0, std)),
+  );
+
 // Fisher-Yates shuffle (in-place)
 export function shuffle<T>(arr: T[]): T[] {
   for (let i = arr.length - 1; i > 0; i--) {
