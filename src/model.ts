@@ -146,7 +146,6 @@ export function analyticGradient(
 
   // Compute the average loss and gradient
   const nParams = data[0].grad.length;
-  console.log(`nParams: ${nParams}`);
   const grad = Array.from({ length: nParams }, (_, i) =>
     mean(data.map((d) => d.grad[i])),
   );
