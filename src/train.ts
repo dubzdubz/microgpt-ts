@@ -1,33 +1,30 @@
 import type { Tokenizer } from "./data";
-import { bigram, type StateDict } from "./model";
-import { mean } from "./utils";
+import { analyticGradient, getParamRefs, type StateDict } from "./model";
 
 export function train(
   stateDict: StateDict,
   docs: string[],
   tokenizer: Tokenizer,
   numSteps: number,
+  learningRate: number,
 ) {
+  const paramRefs = getParamRefs(stateDict);
   for (let step = 0; step < numSteps; step++) {
     const doc = docs[step % docs.length];
     const tokens = tokenizer.encode(doc);
 
-    // Compute losses for each token
-    const losses = tokens.slice(0, -1).map((tokenId, posId) => {
-      const targetId = tokens[posId + 1];
-      const probs = bigram(stateDict, tokenId);
-      return -Math.log(probs[targetId]);
-    });
-    const loss = mean(losses);
+    const { loss, grad } = analyticGradient(stateDict, tokens);
 
-    // Update stateDict with the bigram counts from this document
-    tokens.slice(0, -1).forEach((tokenId, posId) => {
-      const targetId = tokens[posId + 1];
-      stateDict[tokenId][targetId] += 1;
+    // SGD update
+    const lrT = learningRate * (1 - step / numSteps); // linear learning rate decay
+    paramRefs.forEach(([row, j], i) => {
+      row[j] -= lrT * grad[i];
     });
 
-    console.log(
-      `step ${String(step + 1).padStart(4)} / ${String(numSteps).padStart(4)} | loss ${loss.toFixed(4)}`,
-    );
+    if (step < 5 || step % 50 === 0) {
+      console.log(
+        `step ${String(step + 1).padStart(4)} / ${String(numSteps).padStart(4)} | loss ${loss.toFixed(4)}`,
+      );
+    }
   }
 }

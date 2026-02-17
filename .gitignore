@@ -5,3 +5,5 @@ dist
 # local files
 docs/
 tmp/
+AGENTS.md
+CLAUDE.md
