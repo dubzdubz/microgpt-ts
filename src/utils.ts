@@ -1,8 +1,11 @@
+import { Value } from "./value";
+
 // sum of an array
-export const sum = (arr: number[]): number => arr.reduce((a, b) => a + b, 0);
+export const sum = (arr: Value[]): Value =>
+  arr.reduce((a, b) => a.add(b), new Value(0));
 
 // mean of an array
-export const mean = (arr: number[]): number => sum(arr) / arr.length;
+export const mean = (arr: Value[]): Value => sum(arr).div(arr.length);
 
 // Sample from a probability distribution using cumulative weights
 // Assumes weights are normalized to sum to 1
@@ -31,9 +34,9 @@ export const gaussianMatrix = (
   nout: number,
   nin: number,
   std = 0.08,
-): number[][] =>
+): Value[][] =>
   Array.from({ length: nout }, () =>
-    Array.from({ length: nin }, () => randomGaussian(0, std)),
+    Array.from({ length: nin }, () => new Value(randomGaussian(0, std))),
   );
 
 // Fisher-Yates shuffle (in-place)

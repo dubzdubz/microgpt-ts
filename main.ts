@@ -1,10 +1,5 @@
 import { buildTokenizer, loadDocuments } from "./src/data";
-import {
-  getParamRefs,
-  gradientCheck,
-  inference,
-  initStateDict,
-} from "./src/model";
+import { getParams, inference, initStateDict } from "./src/model";
 import { train } from "./src/train";
 
 console.log("microgpt-ts");
@@ -20,9 +15,8 @@ console.log(`vocab size: ${tokenizer.vocabSize}`);
 console.log(`chars: ${tokenizer.chars.join("")}`);
 
 const stateDict = initStateDict(tokenizer.vocabSize);
-const paramRefs = getParamRefs(stateDict);
-console.log(`num params: ${paramRefs.length}`);
+const params = getParams(stateDict);
+console.log(`num params: ${params.length}`);
 
-gradientCheck(stateDict, paramRefs, tokenizer.encode(docs[0]));
 train(stateDict, docs, tokenizer, TRAIN_STEPS, LEARNING_RATE);
 inference(stateDict, tokenizer, NUM_SAMPLES);
