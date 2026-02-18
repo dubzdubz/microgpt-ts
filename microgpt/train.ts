@@ -1,4 +1,4 @@
-import { forward, getParams, type StateDict, type Tokenizer } from "./model";
+import { forward, getParams, type ModelConfig, DEFAULT_CONFIG, type StateDict, type Tokenizer } from "./model";
 import type { Value } from "./value";
 
 export type AdamConfig = {
@@ -37,11 +37,12 @@ export function trainStep(
   step: number,
   numSteps: number,
   config: AdamConfig,
+  modelConfig: ModelConfig = DEFAULT_CONFIG,
 ): StepInfo {
   const { learningRate, beta1, beta2, eps } = config;
 
   // Forward pass (builds computation graph)
-  const loss = forward(stateDict, tokens);
+  const loss = forward(stateDict, tokens, modelConfig);
 
   // Backward pass to compute gradients
   loss.backward();
@@ -67,6 +68,7 @@ export function train(
   tokenizer: Tokenizer,
   numSteps: number,
   config: AdamConfig,
+  modelConfig: ModelConfig = DEFAULT_CONFIG,
   onStep?: (info: StepInfo) => void,
 ) {
   const params = getParams(stateDict);
@@ -83,6 +85,7 @@ export function train(
       step,
       numSteps,
       config,
+      modelConfig,
     );
 
     // Exponential moving average for loss

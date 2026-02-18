@@ -1,4 +1,4 @@
-import { getParams, type StateDict, type Tokenizer } from "./model";
+import { getParams, type ModelConfig, DEFAULT_CONFIG, type StateDict, type Tokenizer } from "./model";
 import {
   type AdamConfig,
   type AdamState,
@@ -20,6 +20,7 @@ export function trainAsync(
   tokenizer: Tokenizer,
   numSteps: number,
   config: AdamConfig,
+  modelConfig: ModelConfig = DEFAULT_CONFIG,
   onStep: (info: StepInfo) => void,
 ): TrainHandle {
   const params = getParams(stateDict);
@@ -50,6 +51,7 @@ export function trainAsync(
           step,
           numSteps,
           config,
+          modelConfig,
         );
         smoothLoss =
           step === 0 ? info.loss : 0.99 * smoothLoss + 0.01 * info.loss;

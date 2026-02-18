@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import {
+  DEFAULT_CONFIG,
   buildTokenizer,
   getParams,
   inference,
@@ -55,6 +56,7 @@ train(
   tokenizer,
   TRAIN_STEPS,
   ADAM_CONFIG,
+  DEFAULT_CONFIG,
   (info) => {
     if (info.step < 5 || info.step % 200 === 0) {
       console.log(

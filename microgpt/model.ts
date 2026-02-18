@@ -32,12 +32,14 @@ export function buildTokenizer(docs: string[]): Tokenizer {
   return { vocabSize, BOS, encode, decode, chars };
 }
 
-const N_EMBD = 16;
-const N_HEAD = 4;
-const N_LAYER = 1;
-const BLOCK_SIZE = 16;
-const HEAD_DIM = N_EMBD / N_HEAD;
-const TEMPERATURE = 0.5;
+export type ModelConfig = {
+  nEmbd: number;
+  nHead: number;
+  nLayer: number;
+  blockSize: number;
+};
+
+export const DEFAULT_CONFIG: ModelConfig = { nEmbd: 16, nHead: 4, nLayer: 1, blockSize: 16 };
 
 export type StateDict = {
   wte: Value[][];
@@ -51,17 +53,18 @@ export type StateDict = {
   lm_head: Value[][];
 };
 
-export function initStateDict(vocabSize: number): StateDict {
+export function initStateDict(vocabSize: number, config: ModelConfig = DEFAULT_CONFIG): StateDict {
+  const { nEmbd, nLayer, blockSize } = config;
   return {
-    wte: gaussianMatrix(vocabSize, N_EMBD),
-    wpe: gaussianMatrix(BLOCK_SIZE, N_EMBD),
-    attn_wq: gaussianMatrixList(N_EMBD, N_EMBD, N_LAYER),
-    attn_wk: gaussianMatrixList(N_EMBD, N_EMBD, N_LAYER),
-    attn_wv: gaussianMatrixList(N_EMBD, N_EMBD, N_LAYER),
-    attn_wo: gaussianMatrixList(N_EMBD, N_EMBD, N_LAYER),
-    mlp_fc1: gaussianMatrixList(4 * N_EMBD, N_EMBD, N_LAYER),
-    mlp_fc2: gaussianMatrixList(N_EMBD, 4 * N_EMBD, N_LAYER),
-    lm_head: gaussianMatrix(vocabSize, N_EMBD),
+    wte: gaussianMatrix(vocabSize, nEmbd),
+    wpe: gaussianMatrix(blockSize, nEmbd),
+    attn_wq: gaussianMatrixList(nEmbd, nEmbd, nLayer),
+    attn_wk: gaussianMatrixList(nEmbd, nEmbd, nLayer),
+    attn_wv: gaussianMatrixList(nEmbd, nEmbd, nLayer),
+    attn_wo: gaussianMatrixList(nEmbd, nEmbd, nLayer),
+    mlp_fc1: gaussianMatrixList(4 * nEmbd, nEmbd, nLayer),
+    mlp_fc2: gaussianMatrixList(nEmbd, 4 * nEmbd, nLayer),
+    lm_head: gaussianMatrix(vocabSize, nEmbd),
   };
 }
 
@@ -112,13 +115,17 @@ function gpt(
   posId: number,
   keys: Value[][][],
   values: Value[][][],
+  config: ModelConfig,
 ): Value[] {
+  const { nEmbd, nHead, nLayer } = config;
+  const headDim = nEmbd / nHead;
+
   const tokEmb = stateDict.wte[tokenId];
   const posEmb = stateDict.wpe[posId];
   let x = vectorAdd(tokEmb, posEmb);
   x = rmsnorm(x);
 
-  for (let layer = 0; layer < N_LAYER; layer++) {
+  for (let layer = 0; layer < nLayer; layer++) {
     // 1: Multi-head attention block
     let xResidual = [...x];
     x = rmsnorm(x);
@@ -129,14 +136,14 @@ function gpt(
     values[layer].push(v);
 
     const xAttn = [];
-    for (let h = 0; h < N_HEAD; h++) {
-      const hStart = h * HEAD_DIM;
-      const qH = q.slice(hStart, hStart + HEAD_DIM);
-      const kH = keys[layer].map((key) => key.slice(hStart, hStart + HEAD_DIM));
+    for (let h = 0; h < nHead; h++) {
+      const hStart = h * headDim;
+      const qH = q.slice(hStart, hStart + headDim);
+      const kH = keys[layer].map((key) => key.slice(hStart, hStart + headDim));
       const vH = values[layer].map((value) =>
-        value.slice(hStart, hStart + HEAD_DIM),
+        value.slice(hStart, hStart + headDim),
       );
-      const attnLogits = kH.map((k) => dotProduct(qH, k).div(HEAD_DIM ** 0.5));
+      const attnLogits = kH.map((k) => dotProduct(qH, k).div(headDim ** 0.5));
       const attnWeights = softmax(attnLogits);
       const headOut = transpose(vH).map((value) =>
         dotProduct(attnWeights, value),
@@ -160,15 +167,15 @@ function gpt(
 }
 
 // Forward pass: run the model on a token sequence, return the average loss
-export function forward(stateDict: StateDict, tokens: number[]): Value {
-  const n = Math.min(BLOCK_SIZE, tokens.length - 1);
-  const keys: Value[][][] = init2dList(N_LAYER);
-  const values: Value[][][] = init2dList(N_LAYER);
+export function forward(stateDict: StateDict, tokens: number[], config: ModelConfig = DEFAULT_CONFIG): Value {
+  const n = Math.min(config.blockSize, tokens.length - 1);
+  const keys: Value[][][] = init2dList(config.nLayer);
+  const values: Value[][][] = init2dList(config.nLayer);
   const losses: Value[] = [];
   for (let posId = 0; posId < n; posId++) {
     const tokenId = tokens[posId];
     const targetId = tokens[posId + 1];
-    const logits = gpt(stateDict, tokenId, posId, keys, values);
+    const logits = gpt(stateDict, tokenId, posId, keys, values, config);
     const probs = softmax(logits);
     losses.push(lossFn(probs[targetId]));
   }
@@ -176,15 +183,15 @@ export function forward(stateDict: StateDict, tokens: number[]): Value {
 }
 
 // Generate a single sample string from the model
-export function inference(stateDict: StateDict, tokenizer: Tokenizer): string {
+export function inference(stateDict: StateDict, tokenizer: Tokenizer, temperature = 0.5, config: ModelConfig = DEFAULT_CONFIG): string {
   const { BOS, decode } = tokenizer;
   let tokenId = BOS;
   const tokens: number[] = [];
-  const keys: Value[][][] = init2dList(N_LAYER);
-  const values: Value[][][] = init2dList(N_LAYER);
-  for (let posId = 0; posId < BLOCK_SIZE; posId++) {
-    const logits = gpt(stateDict, tokenId, posId, keys, values);
-    const probs = softmax(logits.map((l) => l.div(TEMPERATURE)));
+  const keys: Value[][][] = init2dList(config.nLayer);
+  const values: Value[][][] = init2dList(config.nLayer);
+  for (let posId = 0; posId < config.blockSize; posId++) {
+    const logits = gpt(stateDict, tokenId, posId, keys, values, config);
+    const probs = softmax(logits.map((l) => l.div(temperature)));
     tokenId = sample(probs.map((p) => p.data));
     if (tokenId === BOS) break;
     tokens.push(tokenId);
