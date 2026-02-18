@@ -58,3 +58,12 @@ export function shuffle<T>(arr: T[]): T[] {
 
 export const init2dList = <T>(count: number): T[][] =>
   Array.from({ length: count }, () => []);
+
+export function parseDocs(text: string): string[] {
+  const docs = text
+    .trim()
+    .split("\n")
+    .map((line: string) => line.trim())
+    .filter((line: string) => line.length > 0);
+  return shuffle(docs);
+}
