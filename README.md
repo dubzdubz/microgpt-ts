@@ -53,6 +53,19 @@ src/data.ts      — dataset loading and tokenizer
 src/utils.ts     — math helpers (sum, sample, gaussian, shuffle)
 ```
 
+## Progression
+
+The blog post describes building the model up in layers, one component at a time. This repo follows the same progression — each step is a separate PR:
+
+| Step | What it adds | PR |
+|------|--------------|----|
+| train0 | Bigram count table — no neural net, no gradients | [#1](https://github.com/dubzdubz/microgpt-ts/pull/1) |
+| train1 | MLP + manual gradients (numerical & analytic) + SGD | [#2](https://github.com/dubzdubz/microgpt-ts/pull/2) |
+| train2 | Autograd (`Value` class) — replaces manual gradients | [#3](https://github.com/dubzdubz/microgpt-ts/pull/3) |
+| train3 | Position embeddings + single-head attention + rmsnorm + residuals | [#4](https://github.com/dubzdubz/microgpt-ts/pull/4) |
+| train4 | Multi-head attention + layer loop — full GPT architecture | [#5](https://github.com/dubzdubz/microgpt-ts/pull/5) |
+| train5 | Adam optimizer | [#6](https://github.com/dubzdubz/microgpt-ts/pull/6) |
+
 ## Credits
 
 Direct port of Karpathy's [microgpt.py](https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95), which accompanies his blog post [*microgpt*](https://karpathy.github.io/2026/02/12/microgpt/). As he puts it:
