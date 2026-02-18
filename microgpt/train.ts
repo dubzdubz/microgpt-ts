@@ -28,7 +28,12 @@ export type StepInfo = {
   lr: number;
 };
 
-export function emaSmooth(prev: number, value: number, step: number, alpha = 0.01): number {
+export function emaSmooth(
+  prev: number,
+  value: number,
+  step: number,
+  alpha = 0.01,
+): number {
   return step === 0 ? value : (1 - alpha) * prev + alpha * value;
 }
 

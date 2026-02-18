@@ -8,8 +8,8 @@ import {
 import {
   type AdamConfig,
   type AdamState,
-  type StepInfo,
   emaSmooth,
+  type StepInfo,
   trainStep,
 } from "./train";
 

@@ -27,8 +27,8 @@ import { GenerateTab } from "./generate-tab";
 import type { LiveGenEntry } from "./live-gen-stream";
 import type { LossPoint } from "./loss-chart";
 import { CUSTOM_PRESET_ID, PRESETS } from "./presets";
-import { TrainTab } from "./train-tab";
 import { type TrainingConfig, TrainSidebar } from "./train-sidebar";
+import { TrainTab } from "./train-tab";
 
 // --- Constants ---
 
