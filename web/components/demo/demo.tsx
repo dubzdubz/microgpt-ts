@@ -1,5 +1,7 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
+import { Baby, Gem, Globe, PenLine, Wine, Zap } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +30,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { type TrainHandle, trainAsync } from "../../../microgpt/browser";
 import {
   buildTokenizer,
@@ -46,7 +49,18 @@ import {
 } from "../../../microgpt/train";
 import { parseDocs } from "../../../microgpt/utils";
 
-const SAMPLE_NAMES = `emma
+// --- Preset datasets ---
+
+type Preset = {
+  id: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  examples: [string, string, string];
+  words: string;
+};
+
+const PRESET_BABY_NAMES = `emma
 olivia
 ava
 sophia
@@ -97,7 +111,479 @@ anna
 leah
 natalie`;
 
-const NUM_SAMPLES = 10;
+const PRESET_POKEMON = `pikachu
+bulbasaur
+charmander
+squirtle
+eevee
+gengar
+mewtwo
+charizard
+blastoise
+venusaur
+snorlax
+gyarados
+dragonite
+lapras
+jigglypuff
+clefairy
+vulpix
+ninetales
+psyduck
+golduck
+machamp
+alakazam
+abra
+haunter
+gastly
+onix
+raichu
+sandslash
+nidorina
+nidoking
+wigglytuff
+zubat
+golbat
+oddish
+vileplume
+diglett
+meowth
+persian
+mankey
+primeape
+growlithe
+arcanine
+poliwag
+kadabra
+geodude
+graveler
+golem
+ponyta
+rapidash
+slowpoke
+magnemite
+doduo
+seel
+grimer
+shellder
+cloyster
+drowzee
+hypno
+krabby
+voltorb
+electrode
+exeggcute
+cubone
+hitmonlee
+hitmonchan
+lickitung
+koffing
+weezing
+rhyhorn
+chansey
+kangaskhan
+scyther
+electabuzz
+magmar
+pinsir
+tauros
+magikarp
+ditto
+porygon
+omanyte
+omastar
+kabuto
+aerodactyl
+articuno
+zapdos
+moltres
+dratini
+dragonair
+mew`;
+
+const PRESET_COCKTAILS = `mojito
+negroni
+cosmopolitan
+martini
+margarita
+daiquiri
+sidecar
+gimlet
+sazerac
+manhattan
+bellini
+caipirinha
+zombie
+hurricane
+bramble
+spritz
+americano
+stinger
+sangria
+mimosa
+fizz
+smash
+julep
+cobbler
+swizzle
+rickey
+toddy
+sling
+highball
+mudslide
+aperol
+campari
+fernet
+amaretto
+sambuca
+absinthe
+calvados
+bourbon
+tequila
+mezcal
+pisco
+cognac
+armagnac
+vermouth
+drambuie
+kahlua
+cointreau
+chartreuse
+benedictine
+midori
+frangelico
+chambord
+disaronno
+malibu
+galliano
+limoncello
+grappa
+pastis
+baileys
+cynar
+lillet`;
+
+const PRESET_MINERALS = `quartz
+amethyst
+diamond
+emerald
+sapphire
+ruby
+topaz
+opal
+garnet
+tourmaline
+beryl
+aquamarine
+turquoise
+malachite
+obsidian
+onyx
+jasper
+agate
+carnelian
+citrine
+peridot
+spinel
+alexandrite
+kunzite
+tanzanite
+zircon
+pyrite
+hematite
+fluorite
+calcite
+gypsum
+celestite
+amazonite
+rhodonite
+labradorite
+sodalite
+diopside
+actinolite
+talc
+kyanite
+sillimanite
+staurolite
+epidote
+zoisite
+titanite
+apatite
+cassiterite
+sphalerite
+galena
+cinnabar
+marcasite
+covellite
+barite
+anhydrite
+magnetite
+chromite
+cordierite
+iolite
+wollastonite
+chalcedony`;
+
+const PRESET_COUNTRIES = `albania
+algeria
+argentina
+armenia
+australia
+austria
+azerbaijan
+bahamas
+bangladesh
+barbados
+belarus
+belgium
+belize
+benin
+bhutan
+bolivia
+botswana
+brazil
+brunei
+bulgaria
+cameroon
+canada
+chile
+colombia
+croatia
+cuba
+cyprus
+denmark
+ecuador
+egypt
+eritrea
+estonia
+ethiopia
+fiji
+finland
+france
+gabon
+gambia
+georgia
+germany
+ghana
+greece
+grenada
+guatemala
+guyana
+haiti
+honduras
+hungary
+iceland
+india
+indonesia
+iran
+ireland
+israel
+italy
+jamaica
+japan
+jordan
+kazakhstan
+kenya
+kiribati
+kuwait
+laos
+latvia
+lebanon
+lesotho
+liberia
+luxembourg
+madagascar
+malawi
+malaysia
+mali
+malta
+mauritania
+mauritius
+mexico
+moldova
+monaco
+mongolia
+montenegro
+morocco
+mozambique
+myanmar
+namibia
+nauru
+nepal
+nicaragua
+nigeria
+norway
+oman
+pakistan
+panama
+paraguay
+peru
+philippines
+poland
+portugal
+qatar
+romania
+russia
+rwanda
+samoa
+senegal
+serbia
+seychelles
+singapore
+slovakia
+slovenia
+somalia
+spain
+sweden
+switzerland
+tajikistan
+tanzania
+thailand
+tonga
+tunisia
+turkey
+tuvalu
+uganda
+ukraine
+uruguay
+uzbekistan
+vanuatu
+venezuela
+vietnam
+yemen
+zambia
+zimbabwe`;
+
+const PRESETS: Preset[] = [
+  {
+    id: "baby-names",
+    title: "Baby Names",
+    description: "Soft vowels and flowing endings",
+    icon: Baby,
+    examples: ["aurora", "luna", "aria"],
+    words: PRESET_BABY_NAMES,
+  },
+  {
+    id: "pokemon",
+    title: "Pokémon",
+    description: "Punchy sounds and iconic suffixes",
+    icon: Zap,
+    examples: ["pikachu", "gengar", "eevee"],
+    words: PRESET_POKEMON,
+  },
+  {
+    id: "cocktails",
+    title: "Cocktails",
+    description: "Exotic letters and spirited flair",
+    icon: Wine,
+    examples: ["negroni", "gimlet", "sazerac"],
+    words: PRESET_COCKTAILS,
+  },
+  {
+    id: "minerals",
+    title: "Minerals",
+    description: "Latinate suffixes and crystalline sounds",
+    icon: Gem,
+    examples: ["zircon", "epidote", "kunzite"],
+    words: PRESET_MINERALS,
+  },
+  {
+    id: "countries",
+    title: "Countries",
+    description: "Diverse origins from every corner of the world",
+    icon: Globe,
+    examples: ["fiji", "tuvalu", "grenada"],
+    words: PRESET_COUNTRIES,
+  },
+];
+
+const CUSTOM_PRESET_ID = "custom";
+
+// --- PresetPicker ---
+
+type PresetPickerProps = {
+  selectedId: string;
+  customText: string;
+  disabled: boolean;
+  onSelect: (id: string) => void;
+  onCustomTextChange: (text: string) => void;
+};
+
+function PresetPicker({
+  selectedId,
+  customText,
+  disabled,
+  onSelect,
+  onCustomTextChange,
+}: PresetPickerProps) {
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-3 gap-2">
+        {PRESETS.map((preset) => {
+          const Icon = preset.icon;
+          const isActive = selectedId === preset.id;
+          return (
+            <Card
+              key={preset.id}
+              onClick={() => !disabled && onSelect(preset.id)}
+              className={cn(
+                "cursor-pointer p-3 transition-all select-none",
+                isActive
+                  ? "ring-2 ring-primary bg-primary/5"
+                  : "hover:bg-muted/50",
+                disabled && "cursor-not-allowed opacity-50",
+              )}
+            >
+              <div className="flex items-center gap-1.5 mb-1">
+                <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                <span className="text-sm font-medium truncate">
+                  {preset.title}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2 leading-snug">
+                {preset.description}
+              </p>
+              <p className="font-mono text-xs text-muted-foreground/60 truncate">
+                {preset.examples.join(" · ")}
+              </p>
+            </Card>
+          );
+        })}
+        <Card
+          onClick={() => !disabled && onSelect(CUSTOM_PRESET_ID)}
+          className={cn(
+            "cursor-pointer p-3 transition-all select-none",
+            selectedId === CUSTOM_PRESET_ID
+              ? "ring-2 ring-primary bg-primary/5"
+              : "hover:bg-muted/50",
+            disabled && "cursor-not-allowed opacity-50",
+          )}
+        >
+          <div className="flex items-center gap-1.5 mb-1">
+            <PenLine className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+            <span className="text-sm font-medium">Custom</span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-snug">
+            Paste your own word list
+          </p>
+        </Card>
+      </div>
+
+      {selectedId === CUSTOM_PRESET_ID && (
+        <Textarea
+          value={customText}
+          onChange={(e) => onCustomTextChange(e.target.value)}
+          rows={8}
+          disabled={disabled}
+          className="font-mono text-sm"
+          placeholder="Enter words, one per line..."
+        />
+      )}
+    </div>
+  );
+}
+
+// --- Hyperparameter Panel ---
 
 type TrainingConfig = {
   learningRate: number;
@@ -109,8 +595,6 @@ type FullTrainConfig = {
   training: TrainingConfig;
 };
 
-type Status = "idle" | "training" | "trained";
-
 function configsEqual(a: FullTrainConfig, b: FullTrainConfig): boolean {
   return (
     a.model.nEmbd === b.model.nEmbd &&
@@ -121,8 +605,6 @@ function configsEqual(a: FullTrainConfig, b: FullTrainConfig): boolean {
     a.training.numSteps === b.training.numSteps
   );
 }
-
-// --- Hyperparameter Panel ---
 
 type HyperparamPanelProps = {
   modelConfig: ModelConfig;
@@ -156,7 +638,6 @@ function HyperparamPanel({
         )}
       </div>
 
-      {/* Model config */}
       <div className="flex flex-col gap-3">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Model
@@ -261,7 +742,6 @@ function HyperparamPanel({
 
       <Separator />
 
-      {/* Training config */}
       <div className="flex flex-col gap-3">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Training
@@ -316,7 +796,6 @@ function HyperparamPanel({
 
       <Separator />
 
-      {/* Generation config */}
       <div className="flex flex-col gap-3">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Generation
@@ -470,14 +949,65 @@ function LossChart({
   );
 }
 
+// --- Live Gen Stream ---
+
+type LiveGenEntry = { step: number; words: string[] };
+
+const MAX_LIVE_GEN = 15;
+const LIVE_GEN_INTERVAL = 100;
+const LIVE_GEN_SAMPLES = 3;
+
+function LiveGenStream({ entries }: { entries: LiveGenEntry[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: scroll on new entries
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [entries.length]);
+
+  if (entries.length === 0) return null;
+
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        Live samples
+      </p>
+      <div
+        ref={scrollRef}
+        className="h-36 overflow-y-auto rounded-md border bg-muted/30 p-3"
+      >
+        {entries.map((entry) => (
+          <div
+            key={entry.step}
+            className="flex gap-3 font-mono text-xs leading-relaxed"
+          >
+            <span className="shrink-0 text-muted-foreground/50 tabular-nums">
+              {String(entry.step).padStart(5, "\u2007")}
+            </span>
+            <span className="text-muted-foreground">—</span>
+            <span>{entry.words.join(" · ")}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // --- Main Demo ---
 
+type Status = "idle" | "training" | "trained";
+
+const NUM_SAMPLES = 10;
+
 export function TrainDemo() {
-  const [namesText, setNamesText] = useState(SAMPLE_NAMES);
+  const [selectedPresetId, setSelectedPresetId] = useState("baby-names");
+  const [customText, setCustomText] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [step, setStep] = useState(0);
   const [loss, setLoss] = useState(0);
   const [lossHistory, setLossHistory] = useState<LossPoint[]>([]);
+  const [liveGenEntries, setLiveGenEntries] = useState<LiveGenEntry[]>([]);
   const [output, setOutput] = useState<string[]>([]);
   const [elapsed, setElapsed] = useState(0);
 
@@ -487,6 +1017,15 @@ export function TrainDemo() {
     numSteps: 1000,
   });
   const [temperature, setTemperature] = useState(0.5);
+  const temperatureRef = useRef(temperature);
+  useEffect(() => {
+    temperatureRef.current = temperature;
+  }, [temperature]);
+
+  const namesText =
+    selectedPresetId === CUSTOM_PRESET_ID
+      ? customText
+      : (PRESETS.find((p) => p.id === selectedPresetId)?.words ?? "");
 
   const trainedConfigRef = useRef<FullTrainConfig | null>(null);
 
@@ -521,6 +1060,7 @@ export function TrainDemo() {
     setStep(0);
     setLoss(0);
     setLossHistory([]);
+    setLiveGenEntries([]);
     setOutput([]);
     setElapsed(0);
     lossBufferRef.current = [];
@@ -548,14 +1088,28 @@ export function TrainDemo() {
       adamConfig,
       modelConfig,
       (info) => {
-        setStep(info.step + 1);
+        const s = info.step + 1;
+        setStep(s);
         setLoss(info.smoothLoss);
-        lossBufferRef.current.push({
-          step: info.step + 1,
-          loss: info.smoothLoss,
-        });
-        if ((info.step + 1) % 10 === 0 || info.step + 1 === info.numSteps) {
+        lossBufferRef.current.push({ step: s, loss: info.smoothLoss });
+        if (s % 10 === 0 || s === info.numSteps) {
           setLossHistory([...lossBufferRef.current]);
+        }
+        if (s % LIVE_GEN_INTERVAL === 0) {
+          const words = Array.from({ length: LIVE_GEN_SAMPLES }, () =>
+            inference(
+              stateDict,
+              tokenizer,
+              temperatureRef.current,
+              modelConfig,
+            ),
+          );
+          setLiveGenEntries((prev) => {
+            const next = [...prev, { step: s, words }];
+            return next.length > MAX_LIVE_GEN
+              ? next.slice(next.length - MAX_LIVE_GEN)
+              : next;
+          });
         }
       },
     );
@@ -601,14 +1155,18 @@ export function TrainDemo() {
       <Separator orientation="vertical" className="h-auto" />
 
       <div className="flex min-w-0 flex-1 flex-col gap-6">
-        <Textarea
-          value={namesText}
-          onChange={(e) => setNamesText(e.target.value)}
-          rows={10}
-          disabled={status === "training"}
-          className="max-h-[calc(15*1.5em+1rem)] font-mono text-sm"
-          placeholder="Enter names, one per line..."
-        />
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Dataset
+          </p>
+          <PresetPicker
+            selectedId={selectedPresetId}
+            customText={customText}
+            disabled={status === "training"}
+            onSelect={setSelectedPresetId}
+            onCustomTextChange={setCustomText}
+          />
+        </div>
 
         <div className="flex items-center gap-3">
           <Button onClick={handleTrain} disabled={status === "training"}>
@@ -644,9 +1202,11 @@ export function TrainDemo() {
           </div>
         )}
 
+        <LiveGenStream entries={liveGenEntries} />
+
         {output.length > 0 && (
           <div className="rounded-md border p-4">
-            <p className="mb-2 text-sm font-medium">Generated names:</p>
+            <p className="mb-2 text-sm font-medium">Generated:</p>
             <ul className="font-mono text-sm">
               {output.map((name, i) => (
                 <li key={`${i}-${name}`}>{name}</li>
