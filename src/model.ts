@@ -4,7 +4,10 @@ import { gaussianMatrix, mean, sample, sum } from "./utils";
 import type { Value } from "./value";
 
 const N_EMBD = 16;
+const N_HEAD = 4;
+const N_LAYER = 1;
 const BLOCK_SIZE = 16;
+const HEAD_DIM = N_EMBD / N_HEAD;
 const TEMPERATURE = 0.5;
 
 export type StateDict = {
@@ -86,7 +89,7 @@ function gpt(
   let x = vectorAdd(tokEmb, posEmb);
   x = rmsnorm(x);
 
-  // 1: Single-head attention block
+  // 1: Multi-head attention block
   const xResidual = [...x];
   x = rmsnorm(x);
   const q = linear(x, stateDict.attn_wq);
@@ -94,11 +97,20 @@ function gpt(
   const v = linear(x, stateDict.attn_wv);
   keys.push(k);
   values.push(v);
-  const attnLogits = keys.map((key) => dotProduct(q, key).div(N_EMBD ** 0.5));
-  const attnWeights = softmax(attnLogits);
-  const xAttn = transpose(values).map((value) =>
-    dotProduct(attnWeights, value),
-  );
+
+  const xAttn = [];
+  for (let h = 0; h < N_HEAD; h++) {
+    const hStart = h * HEAD_DIM;
+    const qH = q.slice(hStart, hStart + HEAD_DIM);
+    const kH = keys.map((key) => key.slice(hStart, hStart + HEAD_DIM));
+    const vH = values.map((value) => value.slice(hStart, hStart + HEAD_DIM));
+    const attnLogits = kH.map((k) => dotProduct(qH, k).div(HEAD_DIM ** 0.5));
+    const attnWeights = softmax(attnLogits);
+    const headOut = transpose(vH).map((value) =>
+      dotProduct(attnWeights, value),
+    );
+    xAttn.push(...headOut);
+  }
   x = linear(xAttn, stateDict.attn_wo);
   x = vectorAdd(x, xResidual);
 
