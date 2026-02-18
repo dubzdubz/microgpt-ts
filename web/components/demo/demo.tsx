@@ -1,8 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -346,6 +360,116 @@ function lrToSlider(lr: number): number {
   );
 }
 
+// --- Loss Chart ---
+
+type LossPoint = { step: number; loss: number };
+
+const MAX_CHART_POINTS = 200;
+
+function downsample(points: LossPoint[]): LossPoint[] {
+  if (points.length <= MAX_CHART_POINTS) return points;
+  const every = Math.ceil(points.length / MAX_CHART_POINTS);
+  const result: LossPoint[] = [];
+  for (let i = 0; i < points.length; i += every) result.push(points[i]);
+  if (result[result.length - 1] !== points[points.length - 1])
+    result.push(points[points.length - 1]);
+  return result;
+}
+
+const lossChartConfig = {
+  loss: { label: "Loss", color: "var(--chart-1)" },
+} satisfies ChartConfig;
+
+function LossChart({
+  data,
+  numSteps,
+  currentLoss,
+}: {
+  data: LossPoint[];
+  numSteps: number;
+  currentLoss: number;
+}) {
+  const display = downsample(data);
+  const yMax = data.length > 0 ? Math.ceil(data[0].loss) : 4;
+  const lastStep = data.length > 0 ? data[data.length - 1].step : 0;
+  return (
+    <Card size="sm">
+      <CardHeader>
+        <CardTitle>Training Loss</CardTitle>
+        <CardDescription>
+          Smoothed loss over {lastStep.toLocaleString()} /{" "}
+          {numSteps.toLocaleString()} steps — current:{" "}
+          <span className="font-mono font-medium text-foreground">
+            {currentLoss.toFixed(4)}
+          </span>
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={lossChartConfig} className="h-48 w-full">
+          <AreaChart data={display} accessibilityLayer>
+            <defs>
+              <linearGradient id="lossGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="0%"
+                  stopColor="var(--color-loss)"
+                  stopOpacity={0.3}
+                />
+                <stop
+                  offset="100%"
+                  stopColor="var(--color-loss)"
+                  stopOpacity={0.02}
+                />
+              </linearGradient>
+            </defs>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="step"
+              type="number"
+              domain={[0, numSteps]}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(v: number) =>
+                v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(v)
+              }
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              domain={[0, yMax]}
+              tickFormatter={(v: number) => v.toFixed(1)}
+            />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  hideIndicator
+                  labelFormatter={(_, payload) => {
+                    const p = payload?.[0]?.payload as LossPoint | undefined;
+                    return p ? `Step ${p.step}` : "";
+                  }}
+                  formatter={(value) => (
+                    <span className="font-mono font-medium tabular-nums">
+                      {(value as number).toFixed(4)}
+                    </span>
+                  )}
+                />
+              }
+            />
+            <Area
+              dataKey="loss"
+              type="monotone"
+              stroke="var(--color-loss)"
+              strokeWidth={2}
+              fill="url(#lossGradient)"
+            />
+          </AreaChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  );
+}
+
 // --- Main Demo ---
 
 export function TrainDemo() {
@@ -353,6 +477,7 @@ export function TrainDemo() {
   const [status, setStatus] = useState<Status>("idle");
   const [step, setStep] = useState(0);
   const [loss, setLoss] = useState(0);
+  const [lossHistory, setLossHistory] = useState<LossPoint[]>([]);
   const [output, setOutput] = useState<string[]>([]);
   const [elapsed, setElapsed] = useState(0);
 
@@ -389,12 +514,16 @@ export function TrainDemo() {
     return () => clearInterval(id);
   }, [status]);
 
+  const lossBufferRef = useRef<LossPoint[]>([]);
+
   const handleTrain = useCallback(async () => {
     setStatus("training");
     setStep(0);
     setLoss(0);
+    setLossHistory([]);
     setOutput([]);
     setElapsed(0);
+    lossBufferRef.current = [];
 
     const docs = parseDocs(namesText);
     const tokenizer = buildTokenizer(docs);
@@ -421,12 +550,20 @@ export function TrainDemo() {
       (info) => {
         setStep(info.step + 1);
         setLoss(info.smoothLoss);
+        lossBufferRef.current.push({
+          step: info.step + 1,
+          loss: info.smoothLoss,
+        });
+        if ((info.step + 1) % 10 === 0 || info.step + 1 === info.numSteps) {
+          setLossHistory([...lossBufferRef.current]);
+        }
       },
     );
     handleRef.current = handle;
 
     await handle.promise;
     handleRef.current = null;
+    setLossHistory([...lossBufferRef.current]);
     trainedConfigRef.current = { model: modelConfig, training: trainingConfig };
     setStatus((prev) => (prev === "training" ? "trained" : prev));
   }, [namesText, modelConfig, trainingConfig]);
@@ -449,7 +586,7 @@ export function TrainDemo() {
   }, [temperature]);
 
   return (
-    <div className="flex w-full max-w-3xl gap-8">
+    <div className="flex w-full max-w-4xl gap-8">
       <HyperparamPanel
         modelConfig={modelConfig}
         trainingConfig={trainingConfig}
@@ -492,10 +629,19 @@ export function TrainDemo() {
         </div>
 
         {(status === "training" || status === "trained") && (
-          <p className="font-mono text-sm text-muted-foreground">
-            step {step} / {trainingConfig.numSteps} | loss: {loss.toFixed(4)} |{" "}
-            {(elapsed / 1000).toFixed(1)}s
-          </p>
+          <div className="flex flex-col gap-3">
+            <p className="font-mono text-sm text-muted-foreground">
+              step {step} / {trainingConfig.numSteps} | loss: {loss.toFixed(4)}{" "}
+              | {(elapsed / 1000).toFixed(1)}s
+            </p>
+            {lossHistory.length > 1 && (
+              <LossChart
+                data={lossHistory}
+                numSteps={trainingConfig.numSteps}
+                currentLoss={loss}
+              />
+            )}
+          </div>
         )}
 
         {output.length > 0 && (
