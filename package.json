@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "start": "tsx main.ts",
+    "demo": "tsx scripts/demo.ts",
     "dev": "cd web && pnpm dev",
     "build:web": "cd web && pnpm build",
     "storybook": "cd web && pnpm storybook",
