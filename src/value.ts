@@ -69,9 +69,4 @@ export class Value {
       }
     }
   }
-
-  applyGradient(lr: number) {
-    this.data -= lr * this.grad;
-    this.grad = 0; // reset gradient
-  }
 }
