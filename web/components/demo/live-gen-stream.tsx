@@ -20,7 +20,7 @@ export function LiveGenStream({ entries }: { entries: LiveGenEntry[] }) {
       </p>
       <div
         ref={scrollRef}
-        className="h-44 overflow-y-auto rounded-md border bg-muted/30 p-3"
+        className="h-44 overflow-y-auto rounded-lg border bg-muted/30 p-3"
       >
         {entries.map((entry) => (
           <div

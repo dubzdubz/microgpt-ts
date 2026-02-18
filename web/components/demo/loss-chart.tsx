@@ -35,7 +35,7 @@ export function LossChart({
   const display = downsample(data);
   const yMax = data.length > 0 ? Math.ceil(data[0].loss) : 4;
   return (
-    <Card size="sm">
+    <Card size="sm" className="rounded-lg">
       <CardContent className="pt-4">
         <ChartContainer config={lossChartConfig} className="h-56 w-full">
           <AreaChart data={display} accessibilityLayer>
