@@ -1,5 +1,14 @@
-import { forward, getParams, type StateDict, type Tokenizer } from "./model";
+import {
+  DEFAULT_CONFIG,
+  forward,
+  getParams,
+  type ModelConfig,
+  type StateDict,
+  type Tokenizer,
+} from "./model";
 import type { Value } from "./value";
+
+const EMA_ALPHA = 0.01;
 
 export type AdamConfig = {
   learningRate: number;
@@ -21,6 +30,12 @@ export type StepInfo = {
   lr: number;
 };
 
+export function emaSmooth(prev: number | undefined, value: number): number {
+  return prev === undefined
+    ? value
+    : (1 - EMA_ALPHA) * prev + EMA_ALPHA * value;
+}
+
 export const initAdamState = (nParams: number): AdamState => {
   return {
     m: Array.from({ length: nParams }, () => 0),
@@ -37,11 +52,12 @@ export function trainStep(
   step: number,
   numSteps: number,
   config: AdamConfig,
+  modelConfig: ModelConfig = DEFAULT_CONFIG,
 ): StepInfo {
   const { learningRate, beta1, beta2, eps } = config;
 
   // Forward pass (builds computation graph)
-  const loss = forward(stateDict, tokens);
+  const loss = forward(stateDict, tokens, modelConfig);
 
   // Backward pass to compute gradients
   loss.backward();
@@ -67,10 +83,11 @@ export function train(
   tokenizer: Tokenizer,
   numSteps: number,
   config: AdamConfig,
+  modelConfig: ModelConfig = DEFAULT_CONFIG,
   onStep?: (info: StepInfo) => void,
 ) {
   const params = getParams(stateDict);
-  let smoothLoss = 0;
+  let smoothLoss: number | undefined;
 
   for (let step = 0; step < numSteps; step++) {
     const doc = docs[step % docs.length];
@@ -83,10 +100,10 @@ export function train(
       step,
       numSteps,
       config,
+      modelConfig,
     );
 
-    // Exponential moving average for loss
-    smoothLoss = step === 0 ? info.loss : 0.99 * smoothLoss + 0.01 * info.loss;
+    smoothLoss = emaSmooth(smoothLoss, info.loss);
     info.smoothLoss = smoothLoss;
 
     if (onStep) onStep(info);

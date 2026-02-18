@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import {
   buildTokenizer,
+  DEFAULT_CONFIG,
   getParams,
   inference,
   initStateDict,
@@ -55,6 +56,7 @@ train(
   tokenizer,
   TRAIN_STEPS,
   ADAM_CONFIG,
+  DEFAULT_CONFIG,
   (info) => {
     if (info.step < 5 || info.step % 200 === 0) {
       console.log(
@@ -65,4 +67,9 @@ train(
 );
 console.log(`training time: ${((Date.now() - startTime) / 1000).toFixed(2)}s`);
 
-inference(stateDict, tokenizer, NUM_SAMPLES);
+console.log("\n--- inference (new, hallucinated names) ---");
+for (let i = 0; i < NUM_SAMPLES; i++) {
+  console.log(
+    `sample ${String(i + 1).padStart(2)}: ${inference(stateDict, tokenizer)}`,
+  );
+}

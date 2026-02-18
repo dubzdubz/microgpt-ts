@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["../src"],
+  transpilePackages: ["../microgpt", "../datasets"],
 };
 
 export default nextConfig;
