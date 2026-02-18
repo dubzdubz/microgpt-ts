@@ -175,26 +175,19 @@ export function forward(stateDict: StateDict, tokens: number[]): Value {
   return mean(losses);
 }
 
-// Generate new samples by sampling from the model
-export function inference(
-  stateDict: StateDict,
-  tokenizer: Tokenizer,
-  nSamples: number,
-) {
-  console.log("\n--- inference (new, hallucinated names) ---");
+// Generate a single sample string from the model
+export function inference(stateDict: StateDict, tokenizer: Tokenizer): string {
   const { BOS, decode } = tokenizer;
-  for (let i = 0; i < nSamples; i++) {
-    let tokenId = BOS;
-    const tokens: number[] = [];
-    const keys: Value[][][] = init2dList(N_LAYER);
-    const values: Value[][][] = init2dList(N_LAYER);
-    for (let posId = 0; posId < BLOCK_SIZE; posId++) {
-      const logits = gpt(stateDict, tokenId, posId, keys, values);
-      const probs = softmax(logits.map((l) => l.div(TEMPERATURE)));
-      tokenId = sample(probs.map((p) => p.data));
-      if (tokenId === BOS) break;
-      tokens.push(tokenId);
-    }
-    console.log(`sample ${String(i + 1).padStart(2)}: ${decode(tokens)}`);
+  let tokenId = BOS;
+  const tokens: number[] = [];
+  const keys: Value[][][] = init2dList(N_LAYER);
+  const values: Value[][][] = init2dList(N_LAYER);
+  for (let posId = 0; posId < BLOCK_SIZE; posId++) {
+    const logits = gpt(stateDict, tokenId, posId, keys, values);
+    const probs = softmax(logits.map((l) => l.div(TEMPERATURE)));
+    tokenId = sample(probs.map((p) => p.data));
+    if (tokenId === BOS) break;
+    tokens.push(tokenId);
   }
+  return decode(tokens);
 }

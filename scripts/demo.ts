@@ -65,4 +65,9 @@ train(
 );
 console.log(`training time: ${((Date.now() - startTime) / 1000).toFixed(2)}s`);
 
-inference(stateDict, tokenizer, NUM_SAMPLES);
+console.log("\n--- inference (new, hallucinated names) ---");
+for (let i = 0; i < NUM_SAMPLES; i++) {
+  console.log(
+    `sample ${String(i + 1).padStart(2)}: ${inference(stateDict, tokenizer)}`,
+  );
+}
