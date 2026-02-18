@@ -32,7 +32,7 @@ export function trainAsync(
 ): TrainHandle {
   const params = getParams(stateDict);
   let aborted = false;
-  let smoothLoss = 0;
+  let smoothLoss: number | undefined;
 
   const abort = () => {
     aborted = true;
@@ -60,7 +60,7 @@ export function trainAsync(
           config,
           modelConfig,
         );
-        smoothLoss = emaSmooth(smoothLoss, info.loss, step);
+        smoothLoss = emaSmooth(smoothLoss, info.loss);
         info.smoothLoss = smoothLoss;
         onStep(info);
         step++;

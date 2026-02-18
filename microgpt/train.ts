@@ -8,6 +8,8 @@ import {
 } from "./model";
 import type { Value } from "./value";
 
+const EMA_ALPHA = 0.01;
+
 export type AdamConfig = {
   learningRate: number;
   beta1: number;
@@ -28,13 +30,10 @@ export type StepInfo = {
   lr: number;
 };
 
-export function emaSmooth(
-  prev: number,
-  value: number,
-  step: number,
-  alpha = 0.01,
-): number {
-  return step === 0 ? value : (1 - alpha) * prev + alpha * value;
+export function emaSmooth(prev: number | undefined, value: number): number {
+  return prev === undefined
+    ? value
+    : (1 - EMA_ALPHA) * prev + EMA_ALPHA * value;
 }
 
 export const initAdamState = (nParams: number): AdamState => {
@@ -88,7 +87,7 @@ export function train(
   onStep?: (info: StepInfo) => void,
 ) {
   const params = getParams(stateDict);
-  let smoothLoss = 0;
+  let smoothLoss: number | undefined;
 
   for (let step = 0; step < numSteps; step++) {
     const doc = docs[step % docs.length];
@@ -104,7 +103,7 @@ export function train(
       modelConfig,
     );
 
-    smoothLoss = emaSmooth(smoothLoss, info.loss, step);
+    smoothLoss = emaSmooth(smoothLoss, info.loss);
     info.smoothLoss = smoothLoss;
 
     if (onStep) onStep(info);
