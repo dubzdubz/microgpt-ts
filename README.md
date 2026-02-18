@@ -13,7 +13,7 @@ A character-level GPT that learns to generate human-like names. Everything is bu
 
 ```
 pnpm install
-pnpm start
+pnpm demo
 ```
 
 Trains on ~32k names for 1000 steps (11s), then generates new ones:
@@ -45,12 +45,11 @@ sample  5: dahe
 ## Structure
 
 ```
-main.ts          — entry point: load data, train, generate
-src/value.ts     — Value autograd engine (forward + backward)
-src/model.ts     — GPT-2 architecture (embeddings, attention, MLP, inference)
-src/train.ts     — training loop with Adam optimizer
-src/data.ts      — dataset loading and tokenizer
-src/utils.ts     — math helpers (sum, sample, gaussian, shuffle)
+scripts/demo.ts      — entry point: load data, train, generate
+microgpt/value.ts    — Value autograd engine (forward + backward)
+microgpt/model.ts    — GPT-2 architecture (embeddings, attention, MLP, inference)
+microgpt/train.ts    — training loop with Adam optimizer
+microgpt/utils.ts    — math helpers (sum, sample, gaussian, shuffle)
 ```
 
 ## Progression

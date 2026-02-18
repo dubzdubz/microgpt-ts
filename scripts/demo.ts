@@ -5,9 +5,9 @@ import {
   getParams,
   inference,
   initStateDict,
-} from "./src/model";
-import { initAdamState, train } from "./src/train";
-import { parseDocs } from "./src/utils";
+} from "../microgpt/model";
+import { initAdamState, train } from "../microgpt/train";
+import { parseDocs } from "../microgpt/utils";
 
 const DATASET_URL =
   "https://raw.githubusercontent.com/karpathy/makemore/refs/heads/master/names.txt";

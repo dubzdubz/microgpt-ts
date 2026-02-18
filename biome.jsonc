@@ -1,19 +1,55 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "includes": ["**", "!node_modules", "!tmp"]
+    "includes": [
+      "**",
+      "!node_modules",
+      "!tmp",
+      "!web/node_modules",
+      "!web/.next",
+      "!web/.storybook",
+      "!web/storybook-static",
+      "!web/components/ui",
+      "!web/lib/utils.ts"
+    ]
   },
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 2
   },
+  "css": {
+    "parser": {
+      "cssModules": true,
+      "tailwindDirectives": true
+    },
+    "linter": {
+      "enabled": true
+    },
+    "formatter": {
+      "enabled": true
+    }
+  },
   "linter": {
     "rules": {
       "suspicious": {
-        "noConsole": "off"
+        "noConsole": "off",
+        "noExplicitAny": "off",
+        "noUnknownAtRules": "off",
+        "noBitwiseOperators": "off"
       },
       "style": {
-        "noMagicNumbers": "off"
+        "noMagicNumbers": "off",
+        "noNestedTernary": "off"
+      },
+      "nursery": {
+        "noUnnecessaryConditions": "off"
+      },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "off",
+        "useSimplifiedLogicExpression": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off"
       }
     }
   }
