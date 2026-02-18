@@ -1,10 +1,7 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
 import { shuffle } from "./utils";
 
-const DATASET_URL =
+export const DATASET_URL =
   "https://raw.githubusercontent.com/karpathy/makemore/refs/heads/master/names.txt";
-const INPUT_PATH = "./tmp/input.txt";
 
 export type Tokenizer = {
   vocabSize: number;
@@ -30,23 +27,11 @@ export function buildTokenizer(docs: string[]): Tokenizer {
   return { vocabSize, BOS, encode, decode, chars };
 }
 
-export async function loadDocuments(): Promise<string[]> {
-  if (!existsSync(INPUT_PATH)) {
-    const response = await fetch(DATASET_URL);
-    const text = await response.text();
-    mkdirSync(dirname(INPUT_PATH), { recursive: true });
-    writeFileSync(INPUT_PATH, text);
-  }
-
-  const text = readFileSync(INPUT_PATH, "utf-8");
+export function parseDocs(text: string): string[] {
   const docs = text
     .trim()
     .split("\n")
     .map((line: string) => line.trim())
     .filter((line: string) => line.length > 0);
-
-  const shuffled = shuffle(docs);
-
-  console.log(`num docs: ${shuffled.length}`);
-  return shuffled;
+  return shuffle(docs);
 }

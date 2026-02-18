@@ -1,7 +1,10 @@
-import { buildTokenizer, loadDocuments } from "./src/data";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
+import { buildTokenizer, DATASET_URL, parseDocs } from "./src/data";
 import { getParams, inference, initStateDict } from "./src/model";
 import { initAdamState, train } from "./src/train";
 
+const INPUT_PATH = "./tmp/input.txt";
 const NUM_SAMPLES = 20;
 const TRAIN_STEPS = 1000;
 
@@ -12,6 +15,19 @@ const ADAM_CONFIG = {
   beta2: 0.99,
   eps: 1e-8,
 };
+
+async function loadDocuments(): Promise<string[]> {
+  if (!existsSync(INPUT_PATH)) {
+    const response = await fetch(DATASET_URL);
+    const text = await response.text();
+    mkdirSync(dirname(INPUT_PATH), { recursive: true });
+    writeFileSync(INPUT_PATH, text);
+  }
+  const text = readFileSync(INPUT_PATH, "utf-8");
+  const docs = parseDocs(text);
+  console.log(`num docs: ${docs.length}`);
+  return docs;
+}
 
 const docs = await loadDocuments();
 const tokenizer = buildTokenizer(docs);
@@ -25,7 +41,13 @@ const adamState = initAdamState(params.length);
 console.log(`num params: ${params.length}`);
 
 const startTime = Date.now();
-train(stateDict, adamState, docs, tokenizer, TRAIN_STEPS, ADAM_CONFIG);
+train(stateDict, adamState, docs, tokenizer, TRAIN_STEPS, ADAM_CONFIG, (info) => {
+  if (info.step < 5 || info.step % 200 === 0) {
+    console.log(
+      `step ${String(info.step + 1).padStart(4)} / ${String(info.numSteps).padStart(4)} | loss ${info.smoothLoss.toFixed(4)}`,
+    );
+  }
+});
 console.log(`training time: ${((Date.now() - startTime) / 1000).toFixed(2)}s`);
 
 inference(stateDict, tokenizer, NUM_SAMPLES);
