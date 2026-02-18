@@ -48,6 +48,10 @@ function dotProduct(a: Value[], b: Value[]): Value {
   return sum(a.map((ai, i) => ai.mul(b[i])));
 }
 
+function vectorAdd(a: Value[], b: Value[]): Value[] {
+  return a.map((ai, i) => ai.add(b[i]));
+}
+
 function transpose(matrix: Value[][]): Value[][] {
   return matrix[0].map((_, i) => matrix.map((row) => row[i]));
 }
@@ -89,7 +93,7 @@ function gpt(
 ): Value[] {
   const tokEmb = stateDict.wte[tokenId];
   const posEmb = stateDict.wpe[posId];
-  let x = tokEmb.map((t, i) => t.add(posEmb[i]));
+  let x = vectorAdd(tokEmb, posEmb);
   x = rmsnorm(x);
 
   // 1: Single-head attention block
@@ -106,7 +110,7 @@ function gpt(
     dotProduct(attnWeights, value),
   );
   x = linear(xAttn, stateDict.attn_wo);
-  x = x.map((xi, i) => xi.add(xResidual[i]));
+  x = vectorAdd(x, xResidual);
 
   // 2: MLP block
   const xResidual2 = [...x];
@@ -114,7 +118,7 @@ function gpt(
   x = linear(x, stateDict.mlp_fc1);
   x = x.map((xi) => xi.relu());
   x = linear(x, stateDict.mlp_fc2);
-  x = x.map((xi, i) => xi.add(xResidual2[i]));
+  x = vectorAdd(x, xResidual2);
   const logits = linear(x, stateDict.lm_head);
   return logits;
 }
