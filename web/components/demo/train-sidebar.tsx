@@ -130,7 +130,7 @@ export function TrainSidebar({
           id="blockSize"
           label="Context length"
           value={modelConfig.blockSize}
-          options={[8, 16]}
+          options={[8, 16, 32, 64]}
           disabled={disabled}
           onChange={(v) => onModelChange({ ...modelConfig, blockSize: v })}
         />
