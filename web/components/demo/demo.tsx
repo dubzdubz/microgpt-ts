@@ -1,11 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
 import { type TrainHandle, trainAsync } from "../../../microgpt/browser";
 import {
   buildTokenizer,
@@ -24,10 +21,13 @@ import {
 } from "../../../microgpt/train";
 import { parseDocs } from "../../../microgpt/utils";
 import { DatasetSidebar } from "./dataset-sidebar";
+import { DatasetTab } from "./dataset-tab";
 import { GenerateSidebar } from "./generate-sidebar";
-import { type LiveGenEntry, LiveGenStream } from "./live-gen-stream";
-import { LossChart, type LossPoint } from "./loss-chart";
+import { GenerateTab } from "./generate-tab";
+import type { LiveGenEntry } from "./live-gen-stream";
+import type { LossPoint } from "./loss-chart";
 import { CUSTOM_PRESET_ID, PRESETS } from "./presets";
+import { TrainTab } from "./train-tab";
 import { type TrainingConfig, TrainSidebar } from "./train-sidebar";
 
 // --- Constants ---
@@ -264,187 +264,5 @@ export function TrainDemo() {
         </div>
       </div>
     </Tabs>
-  );
-}
-
-// --- Dataset Tab Content ---
-
-function DatasetTab({
-  namesText,
-  customText,
-  selectedPresetId,
-  wordCount,
-  disabled,
-  onCustomTextChange,
-  onTrain,
-}: {
-  namesText: string;
-  customText: string;
-  selectedPresetId: string;
-  wordCount: number;
-  disabled: boolean;
-  onCustomTextChange: (text: string) => void;
-  onTrain: () => void;
-}) {
-  const isCustom = selectedPresetId === CUSTOM_PRESET_ID;
-  return (
-    <div className="flex flex-col gap-4">
-      <Textarea
-        value={isCustom ? customText : namesText}
-        onChange={
-          isCustom ? (e) => onCustomTextChange(e.target.value) : undefined
-        }
-        readOnly={!isCustom}
-        rows={20}
-        className="font-mono text-sm resize-none"
-        placeholder={isCustom ? "Enter words, one per line..." : ""}
-      />
-      <div className="flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">
-          {wordCount} {wordCount === 1 ? "word" : "words"}
-        </p>
-        <Button onClick={onTrain} disabled={disabled || wordCount === 0}>
-          Train on this dataset
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-// --- Train Tab Content ---
-
-function TrainTab({
-  status,
-  step,
-  loss,
-  elapsed,
-  trainingConfig,
-  lossHistory,
-  liveGenEntries,
-  onTrain,
-  onStop,
-  onSwitchToGenerate,
-}: {
-  status: Status;
-  step: number;
-  loss: number;
-  elapsed: number;
-  trainingConfig: TrainingConfig;
-  lossHistory: LossPoint[];
-  liveGenEntries: LiveGenEntry[];
-  onTrain: () => void;
-  onStop: () => void;
-  onSwitchToGenerate: () => void;
-}) {
-  const isTraining = status === "training";
-  const isTrained = status === "trained";
-
-  if (status === "idle") {
-    return (
-      <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
-        <p className="text-muted-foreground">
-          Configure hyperparameters, then start training.
-        </p>
-        <Button onClick={onTrain}>Train</Button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-5">
-      <div className="flex items-center gap-3">
-        <Button onClick={onTrain} disabled={isTraining}>
-          {isTrained ? "Re-train" : "Train"}
-        </Button>
-        {isTraining && (
-          <Button variant="outline" onClick={onStop}>
-            Stop
-          </Button>
-        )}
-        <p className="font-mono text-sm text-muted-foreground">
-          step {step} / {trainingConfig.numSteps} | loss: {loss.toFixed(4)} |{" "}
-          {(elapsed / 1000).toFixed(1)}s
-        </p>
-      </div>
-
-      {lossHistory.length > 1 && (
-        <LossChart
-          data={lossHistory}
-          numSteps={trainingConfig.numSteps}
-          currentLoss={loss}
-        />
-      )}
-
-      <LiveGenStream entries={liveGenEntries} />
-
-      {isTrained && (
-        <button
-          type="button"
-          onClick={onSwitchToGenerate}
-          className="self-start text-sm text-primary hover:underline"
-        >
-          Model ready — switch to Generate &rarr;
-        </button>
-      )}
-    </div>
-  );
-}
-
-// --- Generate Tab Content ---
-
-function GenerateTab({
-  status,
-  output,
-  onGenerate,
-  onSwitchToTrain,
-}: {
-  status: Status;
-  output: string[];
-  onGenerate: () => void;
-  onSwitchToTrain: () => void;
-}) {
-  if (status !== "trained") {
-    return (
-      <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
-        <p className="text-muted-foreground">
-          Train the model first to generate new words.
-        </p>
-        <Button variant="outline" onClick={onSwitchToTrain}>
-          Go to Train
-        </Button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-5">
-      <Button onClick={onGenerate} className="w-fit">
-        Generate
-      </Button>
-
-      {output.length > 0 && (
-        <div className="grid grid-cols-2 gap-x-8 gap-y-1.5 rounded-lg border bg-muted/30 p-6 sm:grid-cols-3">
-          {output.map((name, i) => (
-            <span
-              key={`${i}-${name}`}
-              className={cn(
-                "font-mono text-base",
-                i === 0 && "text-foreground",
-              )}
-            >
-              {name}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {output.length === 0 && (
-        <div className="flex items-center justify-center rounded-lg border border-dashed py-16">
-          <p className="text-sm text-muted-foreground">
-            Click Generate to create new words
-          </p>
-        </div>
-      )}
-    </div>
   );
 }
