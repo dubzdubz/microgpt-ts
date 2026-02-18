@@ -39,6 +39,14 @@ export const gaussianMatrix = (
     Array.from({ length: nin }, () => new Value(randomGaussian(0, std))),
   );
 
+export const gaussianMatrixList = (
+  nout: number,
+  nin: number,
+  nLayers: number,
+  std = 0.08,
+): Value[][][] =>
+  Array.from({ length: nLayers }, () => gaussianMatrix(nout, nin, std));
+
 // Fisher-Yates shuffle (in-place)
 export function shuffle<T>(arr: T[]): T[] {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -47,3 +55,6 @@ export function shuffle<T>(arr: T[]): T[] {
   }
   return arr;
 }
+
+export const init2dList = <T>(count: number): T[][] =>
+  Array.from({ length: count }, () => []);
