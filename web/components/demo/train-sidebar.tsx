@@ -190,7 +190,7 @@ export function TrainSidebar({
         </div>
       </div>
 
-      <div className="mt-auto flex flex-col gap-2 pt-4">
+      <div className="flex flex-col gap-2 pt-4">
         {isTraining ? (
           <Button variant="outline" onClick={onStop} className="w-full">
             Stop

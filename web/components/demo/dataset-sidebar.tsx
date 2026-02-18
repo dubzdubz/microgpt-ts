@@ -63,7 +63,7 @@ export function DatasetSidebar({
         );
       })}
 
-      <div className="mt-auto pt-4">
+      <div className="pt-4">
         <Button
           onClick={onTrain}
           disabled={disabled || wordCount === 0}
