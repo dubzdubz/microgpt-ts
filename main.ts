@@ -6,7 +6,7 @@ console.log("microgpt-ts");
 
 const TRAIN_STEPS = 1000;
 const NUM_SAMPLES = 20;
-const LEARNING_RATE = 1.0;
+const LEARNING_RATE = 0.1;
 
 const docs = await loadDocuments();
 const tokenizer = buildTokenizer(docs);
