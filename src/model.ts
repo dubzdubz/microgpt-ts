@@ -1,4 +1,3 @@
-// Single-layer MLP, trained with autograd
 import type { Tokenizer } from "./data";
 import {
   gaussianMatrix,

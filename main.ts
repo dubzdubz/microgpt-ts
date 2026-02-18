@@ -24,5 +24,8 @@ const params = getParams(stateDict);
 const adamState = initAdamState(params.length);
 console.log(`num params: ${params.length}`);
 
+const startTime = Date.now();
 train(stateDict, adamState, docs, tokenizer, TRAIN_STEPS, ADAM_CONFIG);
+console.log(`training time: ${((Date.now() - startTime) / 1000).toFixed(2)}s`);
+
 inference(stateDict, tokenizer, NUM_SAMPLES);
