@@ -10,6 +10,7 @@
       "!web/.storybook",
       "!web/storybook-static",
       "!web/components/ui",
+      "!web/components/aceternity",
       "!web/lib/utils.ts"
     ]
   },

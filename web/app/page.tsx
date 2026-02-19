@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { HeroCta } from "@/components/hero-cta";
 import { DottedGlowBackground } from "@/components/aceternity/dotted-glow-background";
+import { HeroCta } from "@/components/hero-cta";
 import { Separator } from "@/components/ui/separator";
 
 export default function HomePage() {
