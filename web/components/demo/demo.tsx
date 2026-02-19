@@ -214,7 +214,7 @@ export function TrainDemo() {
         </TabsTrigger>
       </TabsList>
 
-      <div className="flex flex-1 gap-8 min-h-0">
+      <div className="flex flex-1 flex-col md:flex-row gap-4 md:gap-8 min-h-0">
         {/* Adaptive sidebar */}
         {tab === "dataset" && (
           <DatasetSidebar
@@ -253,7 +253,8 @@ export function TrainDemo() {
           />
         )}
 
-        <Separator orientation="vertical" className="h-auto" />
+        <Separator orientation="vertical" className="hidden md:block h-auto" />
+        <Separator className="md:hidden" />
 
         {/* Main content area */}
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
