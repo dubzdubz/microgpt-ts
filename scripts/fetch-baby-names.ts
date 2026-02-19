@@ -1,16 +1,12 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { shuffle } from "../microgpt/utils";
+import { toTsArrayFile } from "./utils";
 
 const URL =
   "https://raw.githubusercontent.com/karpathy/makemore/988aa59/names.txt";
 const OUTPUT_PATH = "./datasets/baby-names.ts";
 const SAMPLE_SIZE = 500;
-
-function toTsArrayFile(varName: string, items: string[]): string {
-  const body = items.map((t) => `  ${JSON.stringify(t)},`).join("\n");
-  return `export const ${varName}: string[] = [\n${body}\n];\n`;
-}
 
 const res = await fetch(URL);
 if (!res.ok) {

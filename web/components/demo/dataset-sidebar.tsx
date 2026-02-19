@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CUSTOM_PRESET, CUSTOM_PRESET_ID, PRESETS } from "./presets";
+import { SECTION_LABEL } from "./types";
 
 type DatasetSidebarProps = {
   selectedId: string;
@@ -24,9 +25,7 @@ export function DatasetSidebar({
   const all = [CUSTOM_PRESET, ...PRESETS];
   return (
     <div className="flex w-full md:w-48 shrink-0 flex-col gap-1">
-      <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        Dataset
-      </p>
+      <p className={`mb-2 ${SECTION_LABEL}`}>Dataset</p>
       {all.map((preset) => {
         const Icon = preset.icon;
         const active = selectedId === preset.id;

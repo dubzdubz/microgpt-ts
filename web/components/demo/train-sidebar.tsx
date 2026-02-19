@@ -10,6 +10,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import type { ModelConfig } from "../../../microgpt/model";
+import { SECTION_LABEL, sliderVal } from "./types";
 
 export type TrainingConfig = {
   learningRate: number;
@@ -101,9 +102,7 @@ function ConfigFields({
   return (
     <>
       <div className="flex flex-col gap-3">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Model
-        </p>
+        <p className={SECTION_LABEL}>Model</p>
         <SelectField
           id="nEmbd"
           label="Embedding dim"
@@ -141,9 +140,7 @@ function ConfigFields({
       <Separator />
 
       <div className="flex flex-col gap-3">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Training
-        </p>
+        <p className={SECTION_LABEL}>Training</p>
 
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
@@ -160,7 +157,7 @@ function ConfigFields({
             onValueChange={(vals) =>
               onTrainingChange({
                 ...trainingConfig,
-                learningRate: sliderToLr(Array.isArray(vals) ? vals[0] : vals),
+                learningRate: sliderToLr(sliderVal(vals)),
               })
             }
             disabled={disabled}
@@ -183,7 +180,7 @@ function ConfigFields({
             onValueChange={(vals) =>
               onTrainingChange({
                 ...trainingConfig,
-                numSteps: Array.isArray(vals) ? vals[0] : vals,
+                numSteps: sliderVal(vals),
               })
             }
             disabled={disabled}
@@ -224,7 +221,9 @@ export function TrainSidebar({
 
       {/* Mobile: collapsible */}
       <details className="md:hidden">
-        <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground [&::-webkit-details-marker]:hidden">
+        <summary
+          className={`flex cursor-pointer list-none items-center gap-1.5 ${SECTION_LABEL} [&::-webkit-details-marker]:hidden`}
+        >
           Settings
           <svg
             viewBox="0 0 10 6"

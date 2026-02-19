@@ -9,8 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-type GenerateMode = "batch" | "explore";
+import { type GenerateMode, sliderVal } from "./types";
 
 type GenerateSidebarProps = {
   mode: GenerateMode;
@@ -112,9 +111,7 @@ export function GenerateSidebar({
             max={10}
             step={1}
             value={[Math.round(temperature * 10)]}
-            onValueChange={(vals) =>
-              onTemperatureChange((Array.isArray(vals) ? vals[0] : vals) / 10)
-            }
+            onValueChange={(vals) => onTemperatureChange(sliderVal(vals) / 10)}
             className="w-full"
           />
         </div>
@@ -137,9 +134,7 @@ export function GenerateSidebar({
             max={30}
             step={1}
             value={[numSamples]}
-            onValueChange={(vals) =>
-              onNumSamplesChange(Array.isArray(vals) ? vals[0] : vals)
-            }
+            onValueChange={(vals) => onNumSamplesChange(sliderVal(vals))}
             disabled={isStepByStep}
             className="w-full"
           />

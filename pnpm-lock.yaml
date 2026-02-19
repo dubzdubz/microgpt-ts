@@ -11,9 +11,6 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.2
         version: 2.4.2
-      '@types/lodash':
-        specifier: ^4.17.23
-        version: 4.17.23
       '@types/node':
         specifier: ^25.2.3
         version: 25.2.3
@@ -235,9 +232,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@types/lodash@4.17.23':
-    resolution: {integrity: sha512-RDvF6wTulMPjrNdCoYRC8gNR880JNGT8uB+REUpC2Ns4pRqQJhGz90wh7rgdXDPpCczF3VGktDuFGVnz8zP7HA==}
-
   '@types/node@25.2.3':
     resolution: {integrity: sha512-m0jEgYlYz+mDJZ2+F4v8D1AyQb+QzsNqRuI7xg1VQX/KlKS0qT9r1Mo16yo5F/MtifXFgaofIFsdFMox2SxIbQ==}
 
@@ -384,8 +378,6 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.3':
     optional: true
-
-  '@types/lodash@4.17.23': {}
 
   '@types/node@25.2.3':
     dependencies:

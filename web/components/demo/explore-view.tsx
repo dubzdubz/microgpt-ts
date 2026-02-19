@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import type { InferenceStep } from "../../../microgpt/model";
 import { TokenProbChart } from "./token-prob-chart";
+import { SECTION_LABEL } from "./types";
 
 type ExploreViewProps = {
   steps: InferenceStep[];
@@ -51,9 +52,7 @@ export function ExploreView({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Sample output
-        </p>
+        <p className={SECTION_LABEL}>Sample output</p>
         <div className="flex flex-wrap gap-2">
           {prefixChars.map((char, i) => (
             <div
@@ -97,7 +96,7 @@ export function ExploreView({
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <p className={SECTION_LABEL}>
           Token probabilities{" "}
           <span className="font-normal">— position {totalChars}</span>
         </p>

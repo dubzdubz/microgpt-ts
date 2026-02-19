@@ -1,11 +1,11 @@
+"use client";
+
 import { motion } from "motion/react";
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import type { InferenceStep } from "../../../microgpt/model";
 import { ExploreView } from "./explore-view";
-
-type Status = "idle" | "training" | "trained";
-type GenerateMode = "batch" | "explore";
+import type { GenerateMode, Status } from "./types";
 
 export function GenerateTab({
   status,

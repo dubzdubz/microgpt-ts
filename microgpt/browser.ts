@@ -38,6 +38,7 @@ export function trainAsync(
   onStep: (info: StepInfo) => void,
   evalDocs?: string[],
   onEval?: (info: EvalInfo) => void,
+  evalWorkerUrl?: URL,
 ): TrainHandle {
   const params = getParams(stateDict);
   const evalInterval = Math.max(1, Math.round(numSteps * 0.05));
@@ -55,7 +56,8 @@ export function trainAsync(
 
   if (encodedEvalDocs && encodedEvalDocs.length > 0 && onEval) {
     worker = new Worker(
-      new URL("../web/workers/eval-worker.ts", import.meta.url),
+      evalWorkerUrl ??
+        new URL("../web/workers/eval-worker.ts", import.meta.url),
     );
     worker.onmessage = (e: MessageEvent<{ id: number; avgLoss: number }>) => {
       inflight--;

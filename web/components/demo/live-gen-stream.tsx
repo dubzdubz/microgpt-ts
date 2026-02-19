@@ -1,4 +1,7 @@
+"use client";
+
 import { useEffect, useRef } from "react";
+import { SECTION_LABEL } from "./types";
 
 export type LiveGenEntry = { step: number; words: string[] };
 
@@ -15,9 +18,7 @@ export function LiveGenStream({ entries }: { entries: LiveGenEntry[] }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        Live samples
-      </p>
+      <p className={SECTION_LABEL}>Live samples</p>
       <div
         ref={scrollRef}
         className="h-44 overflow-y-auto rounded-lg border bg-muted/30 p-3"

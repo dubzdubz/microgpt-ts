@@ -2,12 +2,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { CUSTOM_PRESET_ID } from "./presets";
 
 export function DatasetTab({
-  namesText,
+  datasetText,
   customText,
   selectedPresetId,
   onCustomTextChange,
 }: {
-  namesText: string;
+  datasetText: string;
   customText: string;
   selectedPresetId: string;
   onCustomTextChange: (text: string) => void;
@@ -15,7 +15,7 @@ export function DatasetTab({
   const isCustom = selectedPresetId === CUSTOM_PRESET_ID;
   return (
     <Textarea
-      value={isCustom ? customText : namesText}
+      value={isCustom ? customText : datasetText}
       onChange={
         isCustom ? (e) => onCustomTextChange(e.target.value) : undefined
       }

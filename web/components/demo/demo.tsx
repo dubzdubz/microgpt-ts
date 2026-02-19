@@ -31,6 +31,7 @@ import type { LossPoint } from "./loss-chart";
 import { CUSTOM_PRESET_ID, PRESETS } from "./presets";
 import { type TrainingConfig, TrainSidebar } from "./train-sidebar";
 import { TrainTab } from "./train-tab";
+import type { GenerateMode, Status } from "./types";
 
 // --- Constants ---
 
@@ -39,11 +40,7 @@ const LIVE_GEN_SAMPLES = 5;
 const MAX_LIVE_GEN = 15;
 const DEFAULT_NUM_SAMPLES = 20;
 
-// --- Types ---
-
-type Status = "idle" | "training" | "trained";
 type TabId = "dataset" | "train" | "generate";
-type GenerateMode = "batch" | "explore";
 
 // --- Main Demo ---
 
@@ -73,12 +70,12 @@ export function TrainDemo() {
     temperatureRef.current = temperature;
   }, [temperature]);
 
-  const namesText =
+  const datasetText =
     selectedPresetId === CUSTOM_PRESET_ID
       ? customText
       : (PRESETS.find((p) => p.id === selectedPresetId)?.words ?? "");
 
-  const wordCount = namesText
+  const wordCount = datasetText
     .split("\n")
     .filter((l) => l.trim().length > 0).length;
 
@@ -112,7 +109,7 @@ export function TrainDemo() {
     setElapsed(0);
     lossBufferRef.current = [];
 
-    const allDocs = parseDocs(namesText);
+    const allDocs = parseDocs(datasetText);
     const { train: trainDocs, eval: evalDocsSplit } = splitDocs(allDocs);
     const tokenizer = buildTokenizer(allDocs);
     const stateDict = initStateDict(tokenizer.vocabSize, modelConfig);
@@ -126,6 +123,11 @@ export function TrainDemo() {
     };
 
     modelRef.current = { stateDict, adamState, tokenizer, modelConfig };
+
+    const evalWorkerUrl = new URL(
+      "../../workers/eval-worker.ts",
+      import.meta.url,
+    );
 
     const handle = trainAsync(
       stateDict,
@@ -171,6 +173,7 @@ export function TrainDemo() {
         if (target) target.evalLoss = evalInfo.evalLoss;
         setLossHistory([...lossBufferRef.current]);
       },
+      evalWorkerUrl,
     );
     handleRef.current = handle;
 
@@ -178,7 +181,7 @@ export function TrainDemo() {
     handleRef.current = null;
     setLossHistory([...lossBufferRef.current]);
     setStatus((prev) => (prev === "training" ? "trained" : prev));
-  }, [namesText, modelConfig, trainingConfig]);
+  }, [datasetText, modelConfig, trainingConfig]);
 
   const handleStop = useCallback(() => {
     handleRef.current?.abort();
@@ -337,7 +340,7 @@ export function TrainDemo() {
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           <TabsContent value="dataset" className="mt-0 flex min-h-0 flex-col">
             <DatasetTab
-              namesText={namesText}
+              datasetText={datasetText}
               customText={customText}
               selectedPresetId={selectedPresetId}
               onCustomTextChange={setCustomText}
