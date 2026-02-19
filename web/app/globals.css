@@ -68,10 +68,10 @@
   --ring: oklch(0.708 0 0);
 
   --chart-1: oklch(0.704 0.14 182.503);
-  --chart-2: oklch(0.685 0.169 237.323);
+  --chart-2: oklch(0.67 0.16 58);
+  --chart-5: oklch(0.685 0.169 237.323);
   --chart-3: oklch(0.715 0.143 215.221);
   --chart-4: oklch(0.696 0.17 162.48);
-  --chart-5: oklch(0.623 0.214 259.815);
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
