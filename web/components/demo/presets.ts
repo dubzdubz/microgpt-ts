@@ -5,13 +5,11 @@ import {
   Martini,
   PenLine,
   ScrollText,
-  Smile,
   Zap,
 } from "lucide-react";
 
 import { babyNames } from "../../../datasets/baby-names";
 import { cocktails } from "../../../datasets/cocktails";
-import { emojiMiniStories } from "../../../datasets/emoji-mini-stories";
 import { fortunes } from "../../../datasets/fortunes";
 import { movieTitles } from "../../../datasets/movie-titles";
 import { pokemon } from "../../../datasets/pokemon";
@@ -56,13 +54,6 @@ export const PRESETS: Preset[] = [
     description: "Real film titles with cinematic rhythm",
     icon: Clapperboard,
     words: lines(movieTitles),
-  },
-  {
-    id: "emoji-mini-stories",
-    title: "Emoji Mini Stories",
-    description: "Tiny emoji narratives with strong vibes",
-    icon: Smile,
-    words: lines(emojiMiniStories),
   },
   {
     id: "fortunes",
