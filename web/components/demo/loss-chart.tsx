@@ -97,7 +97,8 @@ export function LossChart({
                     cy: number;
                     payload: LossPoint;
                   };
-                  if (payload.evalLoss === undefined) return <g />;
+                  if (payload.evalLoss === undefined)
+                    return <g key={payload.step} />;
                   return (
                     <motion.circle
                       key={payload.step}
