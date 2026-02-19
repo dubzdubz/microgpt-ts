@@ -84,20 +84,22 @@ function SelectField({
   );
 }
 
-export function TrainSidebar({
+function ConfigFields({
   modelConfig,
   trainingConfig,
   disabled,
-  isTraining,
-  isTrained,
   onModelChange,
   onTrainingChange,
-  onTrain,
-  onStop,
-  onSwitchToGenerate,
-}: TrainSidebarProps) {
+}: Pick<
+  TrainSidebarProps,
+  | "modelConfig"
+  | "trainingConfig"
+  | "disabled"
+  | "onModelChange"
+  | "onTrainingChange"
+>) {
   return (
-    <div className="flex w-48 shrink-0 flex-col gap-5">
+    <>
       <div className="flex flex-col gap-3">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Model
@@ -189,8 +191,57 @@ export function TrainSidebar({
           />
         </div>
       </div>
+    </>
+  );
+}
 
-      <div className="flex flex-col gap-2 pt-4">
+export function TrainSidebar({
+  modelConfig,
+  trainingConfig,
+  disabled,
+  isTraining,
+  isTrained,
+  onModelChange,
+  onTrainingChange,
+  onTrain,
+  onStop,
+  onSwitchToGenerate,
+}: TrainSidebarProps) {
+  const configProps = {
+    modelConfig,
+    trainingConfig,
+    disabled,
+    onModelChange,
+    onTrainingChange,
+  };
+
+  return (
+    <div className="flex w-full md:w-48 shrink-0 flex-col gap-5">
+      {/* Desktop: always visible */}
+      <div className="hidden md:contents">
+        <ConfigFields {...configProps} />
+      </div>
+
+      {/* Mobile: collapsible */}
+      <details className="md:hidden">
+        <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground [&::-webkit-details-marker]:hidden">
+          Settings
+          <svg
+            viewBox="0 0 10 6"
+            className="h-2.5 w-2.5 transition-transform [[open]>&]:rotate-180"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <path d="M1 1l4 4 4-4" />
+          </svg>
+        </summary>
+        <div className="mt-3 flex flex-col gap-5">
+          <ConfigFields {...configProps} />
+        </div>
+      </details>
+
+      <div className="flex flex-col gap-2 pt-4 md:pt-0">
         {isTraining ? (
           <Button variant="outline" onClick={onStop} className="w-full">
             Stop

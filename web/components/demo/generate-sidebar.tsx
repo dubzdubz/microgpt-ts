@@ -20,7 +20,7 @@ export function GenerateSidebar({
   onGenerate,
 }: GenerateSidebarProps) {
   return (
-    <div className="flex w-48 shrink-0 flex-col gap-5">
+    <div className="flex w-full md:w-48 shrink-0 flex-col gap-5">
       <div className="flex flex-col gap-3">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Generation

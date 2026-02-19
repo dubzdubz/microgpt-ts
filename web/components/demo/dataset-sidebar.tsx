@@ -23,7 +23,7 @@ export function DatasetSidebar({
 }: DatasetSidebarProps) {
   const all = [CUSTOM_PRESET, ...PRESETS];
   return (
-    <div className="flex w-48 shrink-0 flex-col gap-1">
+    <div className="flex w-full md:w-48 shrink-0 flex-col gap-1">
       <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
         Dataset
       </p>
