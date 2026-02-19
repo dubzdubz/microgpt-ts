@@ -21,7 +21,7 @@ export default function HomePage() {
       />
 
       {/* Radial fade: clears the center for readable text */}
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_50%_45%_at_50%_50%,var(--color-background)_60%,transparent_100%)]" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,var(--color-background)_60%,transparent_100%)] sm:bg-[radial-gradient(ellipse_50%_45%_at_50%_50%,var(--color-background)_60%,transparent_100%)]" />
 
       <div className="relative z-10 flex max-w-xl flex-col items-center gap-8 text-center">
         <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
