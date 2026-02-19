@@ -15,7 +15,6 @@ import {
 } from "./train";
 
 const CHUNK_SIZE = 10;
-const EVAL_INTERVAL = 50;
 
 export type TrainHandle = {
   promise: Promise<void>;
@@ -41,6 +40,7 @@ export function trainAsync(
   onEval?: (info: EvalInfo) => void,
 ): TrainHandle {
   const params = getParams(stateDict);
+  const evalInterval = Math.max(1, Math.round(numSteps * 0.05));
   let aborted = false;
   let smoothLoss: number | undefined;
   let smoothEvalLoss: number | undefined;
@@ -106,7 +106,11 @@ export function trainAsync(
         smoothLoss = emaSmooth(smoothLoss, info.loss);
         info.smoothLoss = smoothLoss;
 
-        if ((step + 1) % EVAL_INTERVAL === 0 || step === 0) {
+        if (
+          (step + 1) % evalInterval === 0 ||
+          step === 0 ||
+          step === numSteps - 1
+        ) {
           if (worker && encodedEvalDocs) {
             inflight++;
             evalStepMap[++evalId] = step;
