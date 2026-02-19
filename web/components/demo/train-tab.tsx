@@ -53,7 +53,7 @@ export function TrainTab({
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Loss
           </p>
-          <LossChart data={lossHistory} numSteps={trainingConfig.numSteps} />
+          <LossChart data={lossHistory} numSteps={trainingConfig.numSteps} isTraining={isTraining} />
         </div>
       )}
 

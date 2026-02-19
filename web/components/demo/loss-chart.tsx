@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -17,12 +18,15 @@ const lossChartConfig = {
 export function LossChart({
   data,
   numSteps,
+  isTraining,
 }: {
   data: LossPoint[];
   numSteps: number;
+  isTraining: boolean;
 }) {
   const yMax = data.length > 0 ? Math.ceil(data[0].loss) : 4;
   const hasEval = data.some((p) => p.evalLoss !== undefined);
+
   return (
     <Card size="sm" className="rounded-lg">
       <CardContent className="pt-4">
@@ -78,18 +82,38 @@ export function LossChart({
               stroke="var(--color-loss)"
               strokeWidth={2}
               fill="url(#lossGradient)"
-              isAnimationActive={false}
+              isAnimationActive={!isTraining}
             />
             {hasEval && (
               <Area
+                type={!isTraining ? "monotone" : undefined}
                 dataKey="evalLoss"
-                type="monotone"
-                stroke="var(--color-evalLoss)"
-                strokeWidth={2}
+                stroke={!isTraining ? "var(--color-evalLoss)" : "none"}
+                strokeWidth={!isTraining ? 2 : 0}
                 fill="none"
-                dot={{ r: 2, fill: "var(--color-evalLoss)" }}
+                dot={(p: Record<string, unknown>) => {
+                  const { cx, cy, payload } = p as {
+                    cx: number;
+                    cy: number;
+                    payload: LossPoint;
+                  };
+                  if (payload.evalLoss === undefined) return <g />;
+                  return (
+                    <motion.circle
+                      key={payload.step}
+                      cx={cx}
+                      cy={cy}
+                      r={3}
+                      fill="var(--color-evalLoss)"
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, ease: "easeOut" }}
+                      style={{ transformOrigin: `${cx}px ${cy}px` }}
+                    />
+                  );
+                }}
                 connectNulls
-                isAnimationActive={false}
+                isAnimationActive={!isTraining}
               />
             )}
           </AreaChart>

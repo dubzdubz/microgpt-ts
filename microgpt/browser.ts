@@ -71,7 +71,7 @@ export function trainAsync(
         if (
           evalDocs &&
           evalDocs.length > 0 &&
-          (step % EVAL_INTERVAL === 0 || step === numSteps - 1)
+          ((step + 1) % EVAL_INTERVAL === 0 || step === 0)
         ) {
           const avgEvalLoss = mean(
             evalDocs.map((doc) =>
