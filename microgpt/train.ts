@@ -28,8 +28,6 @@ export type StepInfo = {
   loss: number;
   smoothLoss: number;
   lr: number;
-  evalLoss?: number;
-  smoothEvalLoss?: number;
 };
 
 export function emaSmooth(prev: number | undefined, value: number): number {

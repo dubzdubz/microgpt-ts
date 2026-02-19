@@ -1,6 +1,6 @@
+import { snapshotWeights } from "./eval-serialize";
 import {
   DEFAULT_CONFIG,
-  forward,
   getParams,
   type ModelConfig,
   type StateDict,
@@ -13,7 +13,6 @@ import {
   type StepInfo,
   trainStep,
 } from "./train";
-import { mean } from "./utils";
 
 const CHUNK_SIZE = 10;
 const EVAL_INTERVAL = 50;
@@ -21,6 +20,12 @@ const EVAL_INTERVAL = 50;
 export type TrainHandle = {
   promise: Promise<void>;
   abort: () => void;
+};
+
+export type EvalInfo = {
+  evalStep: number;
+  evalLoss: number;
+  smoothEvalLoss: number;
 };
 
 export function trainAsync(
@@ -33,14 +38,47 @@ export function trainAsync(
   modelConfig: ModelConfig = DEFAULT_CONFIG,
   onStep: (info: StepInfo) => void,
   evalDocs?: string[],
+  onEval?: (info: EvalInfo) => void,
 ): TrainHandle {
   const params = getParams(stateDict);
   let aborted = false;
   let smoothLoss: number | undefined;
   let smoothEvalLoss: number | undefined;
 
+  const encodedEvalDocs = evalDocs?.map((doc) => tokenizer.encode(doc));
+  let worker: Worker | null = null;
+  let evalId = 0;
+  let latestEvalId = -1;
+  let inflight = 0;
+  let onDrain: (() => void) | null = null;
+  const evalStepMap: Record<number, number> = {};
+
+  if (encodedEvalDocs && encodedEvalDocs.length > 0 && onEval) {
+    worker = new Worker(
+      new URL("../web/workers/eval-worker.ts", import.meta.url),
+    );
+    worker.onmessage = (e: MessageEvent<{ id: number; avgLoss: number }>) => {
+      inflight--;
+      if (e.data.id <= latestEvalId) {
+        if (inflight === 0 && onDrain) onDrain();
+        return;
+      }
+      latestEvalId = e.data.id;
+      smoothEvalLoss = emaSmooth(smoothEvalLoss, e.data.avgLoss);
+      onEval({
+        evalStep: evalStepMap[e.data.id],
+        evalLoss: e.data.avgLoss,
+        smoothEvalLoss,
+      });
+      delete evalStepMap[e.data.id];
+      if (inflight === 0 && onDrain) onDrain();
+    };
+  }
+
   const abort = () => {
     aborted = true;
+    worker?.terminate();
+    worker = null;
   };
 
   const promise = new Promise<void>((resolve) => {
@@ -68,26 +106,34 @@ export function trainAsync(
         smoothLoss = emaSmooth(smoothLoss, info.loss);
         info.smoothLoss = smoothLoss;
 
-        if (
-          evalDocs &&
-          evalDocs.length > 0 &&
-          ((step + 1) % EVAL_INTERVAL === 0 || step === 0)
-        ) {
-          const avgEvalLoss = mean(
-            evalDocs.map((doc) =>
-              forward(stateDict, tokenizer.encode(doc), modelConfig),
-            ),
-          ).data;
-          smoothEvalLoss = emaSmooth(smoothEvalLoss, avgEvalLoss);
-          info.evalLoss = avgEvalLoss;
-          info.smoothEvalLoss = smoothEvalLoss;
+        if ((step + 1) % EVAL_INTERVAL === 0 || step === 0) {
+          if (worker && encodedEvalDocs) {
+            inflight++;
+            evalStepMap[++evalId] = step;
+            worker.postMessage({
+              id: evalId,
+              weights: snapshotWeights(stateDict),
+              encodedDocs: encodedEvalDocs,
+              config: modelConfig,
+            });
+          }
         }
 
         onStep(info);
         step++;
       }
       if (step >= numSteps) {
-        resolve();
+        if (inflight > 0) {
+          onDrain = () => {
+            worker?.terminate();
+            worker = null;
+            resolve();
+          };
+        } else {
+          worker?.terminate();
+          worker = null;
+          resolve();
+        }
         return;
       }
       setTimeout(runChunk, 0);

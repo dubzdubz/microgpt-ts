@@ -139,13 +139,9 @@ export function TrainDemo() {
         const s = info.step + 1;
         setStep(s);
         setLoss(info.smoothLoss);
-        if (info.evalLoss !== undefined) {
-          setEvalLoss(info.evalLoss);
-        }
         lossBufferRef.current.push({
           step: s,
           loss: info.smoothLoss,
-          evalLoss: info.evalLoss,
         });
         if (s % 10 === 0 || s === info.numSteps) {
           setLossHistory([...lossBufferRef.current]);
@@ -168,6 +164,13 @@ export function TrainDemo() {
         }
       },
       evalDocsSplit,
+      (evalInfo) => {
+        setEvalLoss(evalInfo.evalLoss);
+        const evalS = evalInfo.evalStep + 1;
+        const target = lossBufferRef.current.find((p) => p.step === evalS);
+        if (target) target.evalLoss = evalInfo.evalLoss;
+        setLossHistory([...lossBufferRef.current]);
+      },
     );
     handleRef.current = handle;
 
