@@ -139,13 +139,13 @@ export function TrainDemo() {
         const s = info.step + 1;
         setStep(s);
         setLoss(info.smoothLoss);
-        if (info.smoothEvalLoss !== undefined) {
-          setEvalLoss(info.smoothEvalLoss);
+        if (info.evalLoss !== undefined) {
+          setEvalLoss(info.evalLoss);
         }
         lossBufferRef.current.push({
           step: s,
           loss: info.smoothLoss,
-          evalLoss: info.smoothEvalLoss,
+          evalLoss: info.evalLoss,
         });
         if (s % 10 === 0 || s === info.numSteps) {
           setLossHistory([...lossBufferRef.current]);
