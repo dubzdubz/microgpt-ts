@@ -1,6 +1,9 @@
+"use client";
+
 import { Github } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export function Navbar() {
@@ -12,15 +15,28 @@ export function Navbar() {
         </Link>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <a
-            href="https://github.com/dubzdubz/microgpt-ts"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground transition-colors hover:text-foreground"
+          <Button
+            variant="ghost"
+            size="icon-sm"
             aria-label="GitHub"
+            nativeButton={false}
+            render={
+              // biome-ignore lint/a11y/useAnchorContent: children injected by Base UI render prop
+              <a
+                href="https://github.com/dubzdubz/microgpt-ts"
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            }
           >
             <Github className="size-4" />
-          </a>
+          </Button>
+          <Link
+            href="/playground"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Playground
+          </Link>
           <Link
             href="/about"
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"
