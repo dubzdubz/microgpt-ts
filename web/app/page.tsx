@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { HeroCta } from "@/components/hero-cta";
 import { Separator } from "@/components/ui/separator";
 
@@ -25,14 +26,14 @@ export default function HomePage() {
 
         <p className="text-xs text-muted-foreground/60">
           Inspired by Andrej Karpathy&apos;s{" "}
-          <a
+          <Link
             href="https://karpathy.github.io/2026/02/12/microgpt/"
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-4 hover:text-muted-foreground"
           >
             microgpt
-          </a>
+          </Link>
         </p>
 
         <HeroCta />

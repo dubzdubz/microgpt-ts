@@ -12,14 +12,14 @@ export default function AboutPage() {
             <code className="text-foreground/80">microgpt-ts</code> is a
             complete GPT built from scratch in TypeScript with zero runtime
             dependencies, inspired by Andrej Karpathy&apos;s{" "}
-            <a
+            <Link
               href="https://karpathy.github.io/2026/02/12/microgpt/"
               target="_blank"
               rel="noopener noreferrer"
               className="underline underline-offset-4 hover:text-foreground"
             >
               microgpt
-            </a>
+            </Link>
             . It implements a GPT-2-like architecture with a tokenizer, autograd
             engine, multi-head attention, and Adam optimizer. It includes
             training and inference loops in ~400 lines of readable code.
@@ -27,14 +27,14 @@ export default function AboutPage() {
 
           <p className="leading-relaxed text-muted-foreground">
             This is an educational project. The full source code is on{" "}
-            <a
+            <Link
               href="https://github.com/dubzdubz/microgpt-ts"
               target="_blank"
               rel="noopener noreferrer"
               className="underline underline-offset-4 hover:text-foreground"
             >
               GitHub
-            </a>
+            </Link>
             , each implementation step is a separate pull request you can read
             through, and the{" "}
             <Link
@@ -82,69 +82,69 @@ export default function AboutPage() {
 
           <ol className="list-inside list-decimal space-y-1 text-sm text-muted-foreground">
             <li>
-              <a
+              <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 Bigram count table
-              </a>{" "}
+              </Link>{" "}
               — no neural net, no gradients
             </li>
             <li>
-              <a
+              <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/2"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 MLP + manual gradients + SGD
-              </a>
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/3"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 Autograd
-              </a>{" "}
+              </Link>{" "}
               — a <code className="text-foreground/80">Value</code> class that
               replaces manual gradients
             </li>
             <li>
-              <a
+              <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/4"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 Single-head attention
-              </a>{" "}
+              </Link>{" "}
               — position embeddings, rmsnorm, residual connections
             </li>
             <li>
-              <a
+              <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/5"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 Multi-head attention + layer loop
-              </a>{" "}
+              </Link>{" "}
               — full GPT architecture
             </li>
             <li>
-              <a
+              <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/6"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 Adam optimizer
-              </a>
+              </Link>
             </li>
           </ol>
         </div>
@@ -183,36 +183,36 @@ export default function AboutPage() {
 
           <p className="leading-relaxed text-muted-foreground">
             Inspired by Andrej Karpathy&apos;s{" "}
-            <a
+            <Link
               href="https://karpathy.github.io/2026/02/12/microgpt/"
               target="_blank"
               rel="noopener noreferrer"
               className="underline underline-offset-4 hover:text-foreground"
             >
               microgpt
-            </a>
+            </Link>
             .
           </p>
 
           <p className="text-muted-foreground">
             Built by{" "}
-            <a
+            <Link
               href="https://github.com/dubzdubz"
               target="_blank"
               rel="noopener noreferrer"
               className="underline underline-offset-4 hover:text-foreground"
             >
               @dubzdubz
-            </a>
+            </Link>
             . Source on{" "}
-            <a
+            <Link
               href="https://github.com/dubzdubz/microgpt-ts"
               target="_blank"
               rel="noopener noreferrer"
               className="underline underline-offset-4 hover:text-foreground"
             >
               GitHub
-            </a>
+            </Link>
             .
           </p>
         </div>
