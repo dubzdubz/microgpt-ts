@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-6">
       <div className="flex max-w-xl flex-col items-center gap-8 text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+        <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
           microgpt-ts
         </h1>
 
