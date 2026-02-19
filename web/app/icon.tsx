@@ -18,11 +18,11 @@ export default function Icon() {
         justifyContent: "center",
         color: "white",
         borderRadius: "6px",
-        fontSize: 18,
+        fontSize: 22,
         fontWeight: 700,
       }}
     >
-      N
+      μ
     </div>,
     { ...size },
   );
