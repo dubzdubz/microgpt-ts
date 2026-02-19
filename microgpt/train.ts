@@ -4,7 +4,6 @@ import {
   getParams,
   type ModelConfig,
   type StateDict,
-  type Tokenizer,
 } from "./model";
 
 const EMA_ALPHA = 0.1;
@@ -77,36 +76,4 @@ export function trainStep(
   });
 
   return { step, numSteps, loss: loss.data, smoothLoss: 0, lr };
-}
-
-export function train(
-  stateDict: StateDict,
-  adamState: AdamState,
-  docs: string[],
-  tokenizer: Tokenizer,
-  numSteps: number,
-  adamConfig: AdamConfig,
-  modelConfig: ModelConfig = DEFAULT_CONFIG,
-  onStep?: (info: StepInfo) => void,
-) {
-  let smoothLoss: number | undefined;
-
-  for (let step = 0; step < numSteps; step++) {
-    const doc = docs[step % docs.length];
-    const tokens = tokenizer.encode(doc);
-    const info = trainStep(
-      stateDict,
-      adamState,
-      tokens,
-      step,
-      numSteps,
-      adamConfig,
-      modelConfig,
-    );
-
-    smoothLoss = emaSmooth(smoothLoss, info.loss);
-    info.smoothLoss = smoothLoss;
-
-    if (onStep) onStep(info);
-  }
 }
