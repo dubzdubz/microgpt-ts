@@ -2,6 +2,8 @@ import { Value } from "./value";
 
 const EMA_ALPHA = 0.1;
 
+// Math helpers ------------------------------------------------------------
+
 export const sum = (arr: Value[]): Value =>
   arr.reduce((a, b) => a.add(b), new Value(0));
 
@@ -22,8 +24,7 @@ export const transpose = (matrix: Value[][]): Value[][] =>
 export const emaSmooth = (prev: number | undefined, value: number): number =>
   prev === undefined ? value : (1 - EMA_ALPHA) * prev + EMA_ALPHA * value;
 
-export const init2dList = <T>(count: number): T[][] =>
-  Array.from({ length: count }, () => []);
+// Random number helpers ------------------------------------------------------------
 
 // Sample from a probability distribution using cumulative weights
 // Assumes weights are normalized to sum to 1
@@ -72,6 +73,8 @@ export function shuffle<T>(arr: T[]): T[] {
   return arr;
 }
 
+// Data helpers ------------------------------------------------------------
+
 export function parseDocs(text: string): string[] {
   const docs = text
     .trim()
@@ -92,3 +95,8 @@ export function splitDocs(
     eval: shuffled.slice(0, nEval),
   };
 }
+
+// Other helpers ------------------------------------------------------------
+
+export const init2dList = <T>(count: number): T[][] =>
+  Array.from({ length: count }, () => []);
