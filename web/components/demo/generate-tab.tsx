@@ -1,18 +1,33 @@
 import { motion } from "motion/react";
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import type { InferenceStep } from "../../../microgpt/model";
+import { ExploreView } from "./explore-view";
 
 type Status = "idle" | "training" | "trained";
+type GenerateMode = "batch" | "explore";
 
 export function GenerateTab({
   status,
+  mode,
   output,
   isGenerating,
+  exploreSteps,
+  exploreDone,
+  vocabLabels,
+  BOS,
+  blockSize,
   onSwitchToTrain,
 }: {
   status: Status;
+  mode: GenerateMode;
   output: string[];
   isGenerating: boolean;
+  exploreSteps: InferenceStep[];
+  exploreDone: boolean;
+  vocabLabels: string[];
+  BOS: number;
+  blockSize: number;
   onSwitchToTrain: () => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -33,6 +48,18 @@ export function GenerateTab({
           Go to Train
         </Button>
       </div>
+    );
+  }
+
+  if (mode === "explore") {
+    return (
+      <ExploreView
+        steps={exploreSteps}
+        vocabLabels={vocabLabels}
+        done={exploreDone}
+        BOS={BOS}
+        blockSize={blockSize}
+      />
     );
   }
 

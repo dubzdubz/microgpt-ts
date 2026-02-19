@@ -194,6 +194,49 @@ export function forward(
   return mean(losses);
 }
 
+export type InferenceStep = {
+  posId: number;
+  probs: number[]; // post-temperature softmax, one per vocab token
+  sampledId: number; // the token that was sampled
+  tokensSoFar: number[]; // all tokens generated so far (excluding BOS)
+};
+
+function softmaxRaw(logits: number[]): number[] {
+  const maxVal = Math.max(...logits);
+  const exps = logits.map((l) => Math.exp(l - maxVal));
+  const total = exps.reduce((a, b) => a + b, 0);
+  return exps.map((e) => e / total);
+}
+
+export function* inferenceStepwise(
+  stateDict: StateDict,
+  tokenizer: Tokenizer,
+  temperature = 0.5,
+  config: ModelConfig = DEFAULT_CONFIG,
+): Generator<InferenceStep> {
+  const { BOS } = tokenizer;
+  let tokenId = BOS;
+  const tokens: number[] = [];
+  const keys: Value[][][] = init2dList(config.nLayer);
+  const values: Value[][][] = init2dList(config.nLayer);
+  for (let posId = 0; posId < config.blockSize; posId++) {
+    const logits = gpt(stateDict, tokenId, posId, keys, values, config);
+    const rawLogits =
+      temperature === 0
+        ? logits.map((l) => l.data)
+        : logits.map((l) => l.data / temperature);
+    const probs = softmaxRaw(rawLogits);
+    const sampledId =
+      temperature === 0
+        ? probs.reduce((best, p, i, arr) => (p > arr[best] ? i : best), 0)
+        : sample(probs);
+    yield { posId, probs, sampledId, tokensSoFar: [...tokens] };
+    if (sampledId === BOS) break;
+    tokens.push(sampledId);
+    tokenId = sampledId;
+  }
+}
+
 // Generate a single sample string from the model
 export function inference(
   stateDict: StateDict,

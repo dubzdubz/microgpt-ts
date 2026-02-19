@@ -8,7 +8,9 @@ import {
   buildTokenizer,
   DEFAULT_CONFIG,
   getParams,
+  type InferenceStep,
   inference,
+  inferenceStepwise,
   initStateDict,
   type ModelConfig,
   type StateDict,
@@ -41,6 +43,7 @@ const DEFAULT_NUM_SAMPLES = 20;
 
 type Status = "idle" | "training" | "trained";
 type TabId = "dataset" | "train" | "generate";
+type GenerateMode = "batch" | "explore";
 
 // --- Main Demo ---
 
@@ -168,6 +171,37 @@ export function TrainDemo() {
     setStatus("trained");
   }, []);
 
+  const [generateMode, setGenerateMode] = useState<GenerateMode>("explore");
+  const [exploreSteps, setExploreSteps] = useState<InferenceStep[]>([]);
+  const [exploreDone, setExploreDone] = useState(false);
+  const generatorRef = useRef<Generator<InferenceStep> | null>(null);
+
+  const handleNextToken = useCallback(() => {
+    if (!modelRef.current) return;
+    const { stateDict, tokenizer, modelConfig: mc } = modelRef.current;
+    if (!generatorRef.current) {
+      generatorRef.current = inferenceStepwise(
+        stateDict,
+        tokenizer,
+        temperature,
+        mc,
+      );
+    }
+    const result = generatorRef.current.next();
+    if (result.done) return;
+    setExploreSteps((prev) => [...prev, result.value]);
+    if (result.value.sampledId === tokenizer.BOS) {
+      setExploreDone(true);
+      generatorRef.current = null;
+    }
+  }, [temperature]);
+
+  const handleResetExplore = useCallback(() => {
+    generatorRef.current = null;
+    setExploreSteps([]);
+    setExploreDone(false);
+  }, []);
+
   const [isGenerating, setIsGenerating] = useState(false);
   const genAbortRef = useRef<AbortController | null>(null);
 
@@ -244,12 +278,17 @@ export function TrainDemo() {
         )}
         {tab === "generate" && (
           <GenerateSidebar
+            mode={generateMode}
             temperature={temperature}
             numSamples={numSamples}
             isGenerating={isGenerating}
+            exploreDone={exploreDone}
+            onModeChange={setGenerateMode}
             onTemperatureChange={setTemperature}
             onNumSamplesChange={setNumSamples}
             onGenerate={handleGenerate}
+            onNextToken={handleNextToken}
+            onResetExplore={handleResetExplore}
           />
         )}
 
@@ -282,8 +321,21 @@ export function TrainDemo() {
           <TabsContent value="generate" className="mt-0 flex min-h-0 flex-col">
             <GenerateTab
               status={status}
+              mode={generateMode}
               output={output}
               isGenerating={isGenerating}
+              exploreSteps={exploreSteps}
+              exploreDone={exploreDone}
+              vocabLabels={
+                modelRef.current
+                  ? [...modelRef.current.tokenizer.chars, "·"]
+                  : []
+              }
+              BOS={modelRef.current?.tokenizer.BOS ?? 0}
+              blockSize={
+                modelRef.current?.modelConfig.blockSize ??
+                DEFAULT_CONFIG.blockSize
+              }
               onSwitchToTrain={() => setTab("train")}
             />
           </TabsContent>
