@@ -8,11 +8,10 @@ import {
 } from "../microgpt/model";
 import {
   DEFAULT_ADAM_CONFIG,
-  emaSmooth,
   initAdamState,
   trainStep,
 } from "../microgpt/train";
-import { parseDocs } from "../microgpt/utils";
+import { emaSmooth, parseDocs } from "../microgpt/utils";
 
 const DATASET_URL =
   "https://raw.githubusercontent.com/karpathy/makemore/refs/heads/master/names.txt";
