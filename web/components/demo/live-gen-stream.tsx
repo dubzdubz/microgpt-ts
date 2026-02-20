@@ -21,8 +21,6 @@ export function LiveGenStream({
     if (el) el.scrollTop = el.scrollHeight;
   }, [entries.length]);
 
-  if (entries.length === 0) return null;
-
   return (
     <div className={cn("flex flex-col gap-2 min-h-0", className)}>
       <p className={SECTION_LABEL}>Live samples</p>
@@ -30,13 +28,16 @@ export function LiveGenStream({
         ref={scrollRef}
         className="flex-1 min-h-0 overflow-y-auto rounded-lg border bg-muted/30 p-3"
       >
+        {entries.length === 0 && (
+          <p className="text-xs text-muted-foreground/50 font-mono">Waiting for samples…</p>
+        )}
         {entries.map((entry) => (
           <div
             key={entry.step}
             className="flex gap-3 font-mono text-xs leading-relaxed"
           >
             <span className="shrink-0 text-muted-foreground/50 tabular-nums">
-              {String(entry.step).padStart(5, "\u2007")}
+              Step {entry.step}
             </span>
             <span className="text-muted-foreground">—</span>
             <span>{entry.words.join(" · ")}</span>

@@ -47,17 +47,19 @@ export function TrainTab({
         elapsed={elapsed}
       />
 
-      {lossHistory.length > 1 && (
-        <div className="flex flex-col gap-2 flex-[3] min-h-0">
-          <p className={SECTION_LABEL}>Loss</p>
+      <div className="flex flex-col gap-2 flex-[3] min-h-0">
+        <p className={SECTION_LABEL}>Loss</p>
+        {lossHistory.length > 1 ? (
           <LossChart
             className="flex-1 min-h-0"
             data={lossHistory}
             numSteps={trainingConfig.numSteps}
             isTraining={isTraining}
           />
-        </div>
-      )}
+        ) : (
+          <div className="flex-1 min-h-0 rounded-lg border bg-muted/30" />
+        )}
+      </div>
 
       <LiveGenStream className="flex-[2] min-h-0" entries={liveGenEntries} />
     </div>
