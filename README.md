@@ -92,6 +92,8 @@ The [blog post](https://karpathy.github.io/2026/02/12/microgpt/) describes build
 | train4 | Multi-head attention + layer loop — full GPT architecture | [#5](https://github.com/dubzdubz/microgpt-ts/pull/5) |
 | train5 | Adam optimizer | [#6](https://github.com/dubzdubz/microgpt-ts/pull/6) |
 
+Each step is also tagged (`step-1-bigram` through `step-6-microgpt-completed`) so you can checkout any snapshot directly: `git checkout step-2-mlp`.
+
 ## Development
 
 Scripts from the repo root:
