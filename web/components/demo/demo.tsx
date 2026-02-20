@@ -46,7 +46,7 @@ type TabId = "dataset" | "train" | "generate";
 
 export function TrainDemo() {
   const [tab, setTab] = useState<TabId>("dataset");
-  const [selectedPresetId, setSelectedPresetId] = useState("baby-names");
+  const [selectedPresetId, setSelectedPresetId] = useState("baby-names-simple");
   const [customText, setCustomText] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [step, setStep] = useState(0);

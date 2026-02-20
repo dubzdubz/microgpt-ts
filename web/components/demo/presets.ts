@@ -63,13 +63,13 @@ export const PRESETS: Preset[] = [
     icon: Clapperboard,
     words: lines(movieTitles),
   },
-  {
-    id: "fortunes",
-    title: "Fortunes",
-    description: "Short, shareable one-liners",
-    icon: ScrollText,
-    words: lines(fortunes),
-  },
+  // {
+  //   id: "fortunes",
+  //   title: "Fortunes",
+  //   description: "Short, shareable one-liners",
+  //   icon: ScrollText,
+  //   words: lines(fortunes),
+  // },
 ];
 
 export const CUSTOM_PRESET: Preset = {
