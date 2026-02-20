@@ -294,7 +294,9 @@ export function TrainDemo() {
             onStop={handleStop}
             onSwitchToGenerate={() => {
               setTab("generate");
-              handleGenerate();
+              setGenerateMode("explore");
+              handleResetExplore();
+              handleNextToken();
             }}
           />
         )}
