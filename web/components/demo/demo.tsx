@@ -93,8 +93,9 @@ export function TrainDemo() {
 
   useEffect(() => {
     if (status !== "training") return;
+    const start = Date.now();
     const id = setInterval(() => {
-      setElapsed((prev) => prev + 100);
+      setElapsed(Date.now() - start);
     }, 100);
     return () => clearInterval(id);
   }, [status]);
