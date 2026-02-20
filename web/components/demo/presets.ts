@@ -1,17 +1,9 @@
 import type { LucideIcon } from "lucide-react";
-import {
-  Baby,
-  Clapperboard,
-  Martini,
-  PenLine,
-  ScrollText,
-  Zap,
-} from "lucide-react";
+import { Baby, Clapperboard, Martini, PenLine, Zap } from "lucide-react";
 
 import { babyNames } from "../../../datasets/baby-names";
 import { babyNamesSimple } from "../../../datasets/baby-names-simple";
 import { cocktails } from "../../../datasets/cocktails";
-import { fortunes } from "../../../datasets/fortunes";
 import { movieTitles } from "../../../datasets/movie-titles";
 import { pokemon } from "../../../datasets/pokemon";
 
