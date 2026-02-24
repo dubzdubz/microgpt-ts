@@ -1,11 +1,11 @@
 import type { LucideIcon } from "lucide-react";
-import { Baby, Clapperboard, Martini, PenLine, Zap } from "lucide-react";
+import { Baby, Building2, Clapperboard, PenLine, Zap } from "lucide-react";
 
 import { babyNames } from "../../../datasets/baby-names";
 import { babyNamesSimple } from "../../../datasets/baby-names-simple";
-import { cocktails } from "../../../datasets/cocktails";
 import { movieTitles } from "../../../datasets/movie-titles";
 import { pokemon } from "../../../datasets/pokemon";
+import { sp500 } from "../../../datasets/sp500";
 
 export type Preset = {
   id: string;
@@ -42,11 +42,11 @@ export const PRESETS: Preset[] = [
     words: lines(pokemon),
   },
   {
-    id: "cocktails",
-    title: "Cocktails",
-    description: "Punchy sounds and iconic suffixes",
-    icon: Martini,
-    words: lines(cocktails),
+    id: "sp500",
+    title: "Company Names",
+    description: "500 company names from the S&P 500 index",
+    icon: Building2,
+    words: lines(sp500),
   },
   {
     id: "movie-titles",
