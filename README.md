@@ -2,7 +2,7 @@
 
 A TypeScript port of Andrej Karpathy's [microgpt](https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95) — a complete GPT built from scratch with **zero runtime dependencies**. Supports training and inference.
 
-No PyTorch. No TensorFlow. Just TypeScript, ~400 lines of code. Runs in the browser.
+No PyTorch. No TensorFlow. Just TypeScript, ~500 lines of code. Runs in the browser.
 
 **Try the live playground: [microgpt-ts.vercel.app](https://microgpt-ts.vercel.app/)**
 
@@ -68,7 +68,7 @@ Features:
 ## Project Structure
 
 ```
-microgpt/                  Core library (~400 lines, zero dependencies)
+microgpt/                  Core library (~500 lines, zero dependencies)
   value.ts                   Autograd engine (forward + backward via chain rule)
   model.ts                   GPT architecture (embeddings, attention, MLP, inference)
   train.ts                   Training loop with Adam optimizer

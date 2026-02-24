@@ -21,6 +21,21 @@ function uniq(arr: string[]): string[] {
   return out;
 }
 
+function normalize(t: string): string {
+  const subs: [RegExp, string][] = [
+    [/ß/g, "ss"],
+    [/[łĽ]/g, "l"],
+    [/[øØ]/g, "o"],
+    [/[æÆ]/g, "ae"],
+    [/[œŒ]/g, "oe"],
+    [/[ðÐ]/g, "d"],
+    [/[þÞ]/g, "th"],
+  ];
+  let s = t;
+  for (const [re, sub] of subs) s = s.replace(re, sub);
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 const OUTPUT_PATH = "./datasets/movie-titles.ts";
 const LIMIT = 2000;
 const MAX_LEN = 64;
@@ -57,11 +72,12 @@ const raw = data.results.bindings
 
 const cleaned = uniq(
   raw
-    .map((t) => t.replace(/\s+/g, " ").trim())
+    .map((t) => normalize(t.replace(/\s+/g, " ").trim()).toLowerCase())
     .filter((t) => t.length > 0)
     .filter((t) => !t.includes("\n"))
     .filter((t) => t.length <= MAX_LEN)
-    .filter((t) => !t.toLowerCase().startsWith("list of ")),
+    .filter((t) => !t.toLowerCase().startsWith("list of "))
+    .filter((t) => /^[a-zA-Z0-9 ]+$/.test(t)),
 ).sort((a, b) => a.localeCompare(b));
 
 mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
