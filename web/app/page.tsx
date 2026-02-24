@@ -37,7 +37,7 @@ export default function HomePage() {
 
         <p className="text-sm leading-relaxed text-muted-foreground">
           GPT-2-like architecture with tokenizer, autograd, multi-head
-          attention, and Adam optimizer. Training &amp; inference in ~400 lines
+          attention, and Adam optimizer. Training &amp; inference in ~500 lines
           of readable code. Train a model and generate text right here in your
           browser.
         </p>

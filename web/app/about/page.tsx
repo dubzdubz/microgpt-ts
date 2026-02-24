@@ -22,7 +22,7 @@ export default function AboutPage() {
             </Link>
             . It implements a GPT-2-like architecture with a tokenizer, autograd
             engine, multi-head attention, and Adam optimizer. It includes
-            training and inference loops in ~400 lines of readable code.
+            training and inference loops in ~500 lines of readable code.
           </p>
 
           <p className="leading-relaxed text-muted-foreground">
