@@ -1,11 +1,16 @@
 import type { LucideIcon } from "lucide-react";
 import { Baby, Building2, Clapperboard, PenLine, Zap } from "lucide-react";
-
 import { babyNames } from "../../../datasets/baby-names";
 import { babyNamesSimple } from "../../../datasets/baby-names-simple";
 import { movieTitles } from "../../../datasets/movie-titles";
 import { pokemon } from "../../../datasets/pokemon";
 import { sp500 } from "../../../datasets/sp500";
+import type { ModelConfig } from "../../../microgpt/model";
+
+export type PresetTrainingConfig = {
+  learningRate?: number;
+  numSteps?: number;
+};
 
 export type Preset = {
   id: string;
@@ -13,6 +18,8 @@ export type Preset = {
   description: string;
   icon: LucideIcon;
   words: string;
+  modelConfig?: Partial<ModelConfig>;
+  trainingConfig?: PresetTrainingConfig;
 };
 
 export const CUSTOM_PRESET_ID = "custom";
@@ -26,6 +33,7 @@ export const PRESETS: Preset[] = [
     description: "50 popular names with soft vowels",
     icon: Baby,
     words: lines(babyNamesSimple),
+    trainingConfig: { learningRate: 0.001 },
   },
   {
     id: "baby-names",
@@ -47,6 +55,8 @@ export const PRESETS: Preset[] = [
     description: "500 company names from the S&P 500 index",
     icon: Building2,
     words: lines(sp500),
+    trainingConfig: { learningRate: 0.005, numSteps: 5000 },
+    modelConfig: { nLayer: 2 },
   },
   {
     id: "movie-titles",
@@ -54,6 +64,8 @@ export const PRESETS: Preset[] = [
     description: "Real film titles with cinematic rhythm",
     icon: Clapperboard,
     words: lines(movieTitles),
+    modelConfig: { nEmbd: 32, blockSize: 32, nLayer: 2 },
+    trainingConfig: { numSteps: 3000 },
   },
   // {
   //   id: "fortunes",

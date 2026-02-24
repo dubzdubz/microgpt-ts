@@ -55,12 +55,23 @@ export function TrainDemo() {
 
   const [modelConfig, setModelConfig] = useState<ModelConfig>(DEFAULT_CONFIG);
   const [trainingConfig, setTrainingConfig] = useState<TrainingConfig>({
-    learningRate: 0.01,
+    learningRate: 0.001,
     numSteps: 1000,
   });
   const [temperature, setTemperature] = useState(0.5);
   const [numSamples, setNumSamples] = useState(DEFAULT_NUM_SAMPLES);
   const [prefix, setPrefix] = useState("");
+
+  const handlePresetSelect = useCallback((id: string) => {
+    setSelectedPresetId(id);
+    const preset = PRESETS.find((p) => p.id === id);
+    setModelConfig({ ...DEFAULT_CONFIG, ...preset?.modelConfig });
+    setTrainingConfig({
+      learningRate: 0.01,
+      numSteps: 1000,
+      ...preset?.trainingConfig,
+    });
+  }, []);
 
   const datasetText =
     selectedPresetId === CUSTOM_PRESET_ID
@@ -294,7 +305,7 @@ export function TrainDemo() {
             selectedId={selectedPresetId}
             disabled={isTraining}
             wordCount={wordCount}
-            onSelect={setSelectedPresetId}
+            onSelect={handlePresetSelect}
             onTrain={handleTrain}
           />
         )}
