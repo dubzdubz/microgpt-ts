@@ -57,7 +57,7 @@ Head to `localhost:3000/playground` to train a model and generate text in real t
 
 Features:
 
-- **Preset datasets** — baby names, Pokemon, cocktails, movie titles, fortunes, and more
+- **Preset datasets** — baby names, Pokemon, company names, movie titles, fortunes, and more
 - **Custom data** — paste or upload your own text
 - **Configurable architecture** — adjust embedding size, attention heads, layers, and block size
 - **Live training** — real-time loss charts and sample generation as the model trains
@@ -74,7 +74,7 @@ microgpt/                  Core library (~500 lines, zero dependencies)
   train.ts                   Training loop with Adam optimizer
   utils.ts                   Math helpers (softmax, sampling, matrix ops)
   browser.ts                 Browser runtime (async training, Web Workers, serialization)
-datasets/                  Preset training datasets (baby names, pokemon, cocktails, ...)
+datasets/                  Preset training datasets (baby names, pokemon, company names, ...)
 scripts/demo.ts            CLI entry point: load data, train, generate
 web/                       Next.js interactive playground
 ```
