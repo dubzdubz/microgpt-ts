@@ -74,7 +74,7 @@ export function Navbar() {
               <a
                 href="https://github.com/dubzdubz/microgpt-ts"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
               />
             }
           >

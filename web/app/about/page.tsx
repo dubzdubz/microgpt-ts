@@ -30,7 +30,7 @@ export default function AboutPage() {
             <Link
               href="https://github.com/dubzdubz/microgpt-ts"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="underline underline-offset-4 hover:text-foreground"
             >
               GitHub
@@ -85,7 +85,7 @@ export default function AboutPage() {
               <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/1"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 Bigram count table
@@ -96,7 +96,7 @@ export default function AboutPage() {
               <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/2"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 MLP + manual gradients + SGD
@@ -106,7 +106,7 @@ export default function AboutPage() {
               <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/3"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 Autograd
@@ -118,7 +118,7 @@ export default function AboutPage() {
               <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/4"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 Single-head attention
@@ -129,7 +129,7 @@ export default function AboutPage() {
               <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/5"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 Multi-head attention + layer loop
@@ -140,7 +140,7 @@ export default function AboutPage() {
               <Link
                 href="https://github.com/dubzdubz/microgpt-ts/pull/6"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline underline-offset-4 hover:text-foreground"
               >
                 Adam optimizer
@@ -199,7 +199,7 @@ export default function AboutPage() {
             <Link
               href="https://github.com/dubzdubz"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="underline underline-offset-4 hover:text-foreground"
             >
               @dubzdubz
@@ -208,7 +208,7 @@ export default function AboutPage() {
             <Link
               href="https://github.com/dubzdubz/microgpt-ts"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="underline underline-offset-4 hover:text-foreground"
             >
               GitHub
