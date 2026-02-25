@@ -56,7 +56,12 @@ export type TrainWorkerIn =
 export type TrainWorkerOut =
   | {
       type: "ready";
-      tokenizer: { chars: string[]; BOS: number; vocabSize: number; blockSize: number };
+      tokenizer: {
+        chars: string[];
+        BOS: number;
+        vocabSize: number;
+        blockSize: number;
+      };
     }
   | { type: "steps"; batch: { step: number; smoothLoss: number }[] }
   | { type: "live-gen"; step: number; words: string[] }
