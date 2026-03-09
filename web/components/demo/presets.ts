@@ -33,7 +33,7 @@ export const PRESETS: Preset[] = [
     description: "50 popular names with soft vowels",
     icon: Baby,
     words: lines(babyNamesSimple),
-    trainingConfig: { learningRate: 0.001 },
+    trainingConfig: { learningRate: 0.0025, numSteps: 700 },
   },
   {
     id: "baby-names",
