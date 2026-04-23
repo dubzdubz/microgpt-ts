@@ -11,6 +11,7 @@ tmp/
 # next.js
 .next/
 out/
+.idea/
 
 # storybook
 storybook-static

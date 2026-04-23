@@ -16,9 +16,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: LayoutProps<'/'>) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="flex h-screen flex-col overflow-hidden antialiased">
