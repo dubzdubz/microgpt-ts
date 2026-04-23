@@ -7,11 +7,7 @@ import { Button } from "@/components/ui/button";
 export function HeroCta() {
   return (
     <div className="flex items-center gap-3">
-      <Button
-        size="lg"
-        nativeButton={false}
-        render={<Link href="/playground" />}
-      >
+      <Button size="lg" nativeButton={false} render={<Link href="/playground" />}>
         Open Playground
         <ArrowRight className="ml-2 size-4" />
       </Button>

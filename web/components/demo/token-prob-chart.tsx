@@ -8,11 +8,7 @@ type TokenProbChartProps = {
   vocabLabels: string[];
 };
 
-export function TokenProbChart({
-  probs,
-  tokenId,
-  vocabLabels,
-}: TokenProbChartProps) {
+export function TokenProbChart({ probs, tokenId, vocabLabels }: TokenProbChartProps) {
   const maxProb = Math.max(...probs);
 
   const sorted = probs.map((p, i) => ({ p, i })).sort((a, b) => b.p - a.p);
@@ -67,9 +63,7 @@ export function TokenProbChart({
             );
           })}
         </div>
-        <p className="text-[9px] text-muted-foreground text-center mt-0.5">
-          Character
-        </p>
+        <p className="text-[9px] text-muted-foreground text-center mt-0.5">Character</p>
       </div>
     </div>
   );

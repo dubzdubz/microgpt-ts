@@ -36,17 +36,13 @@ export function ExploreView({
             ))}
           </div>
         )}
-        <p className="text-sm text-muted-foreground">
-          Click Next Token to begin
-        </p>
+        <p className="text-sm text-muted-foreground">Click Next Token to begin</p>
       </div>
     );
   }
 
   const lastStep = steps[steps.length - 1];
-  const wordChars = steps
-    .filter((s) => s.tokenId !== BOS)
-    .map((s) => vocabLabels[s.tokenId]);
+  const wordChars = steps.filter((s) => s.tokenId !== BOS).map((s) => vocabLabels[s.tokenId]);
   const totalChars = prefixChars.length + wordChars.length;
 
   return (
