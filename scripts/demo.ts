@@ -19,8 +19,6 @@ const INPUT_PATH = "./tmp/input.txt";
 const NUM_SAMPLES = 20;
 const TRAIN_STEPS = 1000;
 
-const adamConfig = DEFAULT_ADAM_CONFIG;
-
 async function loadDocuments(): Promise<string[]> {
   if (!existsSync(INPUT_PATH)) {
     const response = await fetch(DATASET_URL);
@@ -55,7 +53,7 @@ for (let step = 0; step < TRAIN_STEPS; step++) {
     tokens,
     step,
     TRAIN_STEPS,
-    adamConfig,
+    DEFAULT_ADAM_CONFIG,
   );
   smoothLoss = emaSmooth(smoothLoss, info.loss);
   if (step < 5 || step % 200 === 0) {

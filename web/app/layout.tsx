@@ -14,9 +14,7 @@ export const metadata: Metadata = {
     "A complete GPT built from scratch with zero runtime dependencies.",
 };
 
-export default function RootLayout({
-  children,
-}: LayoutProps<'/'>) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="flex h-screen flex-col overflow-hidden antialiased">

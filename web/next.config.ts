@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   reactCompiler: {
     // Fail the build on any compiler diagnostic
-    panicThreshold: 'all_errors',
+    panicThreshold: "all_errors",
   },
   transpilePackages: ["../microgpt", "../datasets"],
 };
