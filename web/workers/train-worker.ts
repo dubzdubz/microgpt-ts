@@ -1,8 +1,4 @@
-import {
-  snapshotWeights,
-  type TrainWorkerIn,
-  type TrainWorkerOut,
-} from "../../microgpt/browser";
+import { snapshotWeights, type TrainWorkerIn, type TrainWorkerOut } from "../../microgpt/browser";
 import {
   buildTokenizer,
   getParams,
@@ -80,10 +76,7 @@ function runTraining(
         post({ type: "live-gen", step: s, words });
       }
 
-      if (
-        (s % evalInterval === 0 || s === 1 || s === numSteps) &&
-        encodedEvalDocs.length > 0
-      ) {
+      if ((s % evalInterval === 0 || s === 1 || s === numSteps) && encodedEvalDocs.length > 0) {
         // Flush any buffered steps so the eval point already exists in lossBuffer on the main thread
         // when the eval result arrives back (otherwise target.evalLoss is silently dropped).
         if (stepBatch.length > 0) {
