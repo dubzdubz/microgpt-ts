@@ -4,14 +4,6 @@ export default defineConfig({
   $schema: "./node_modules/oxfmt/configuration_schema.json",
   tabWidth: 2,
   useTabs: false,
-  sortPackageJson: false,
-  ignorePatterns: [
-    "tmp/**",
-    "web/.next/**",
-    "web/.storybook/**",
-    "web/storybook-static/**",
-    "web/components/ui/**",
-    "web/components/aceternity/**",
-    "web/lib/utils.ts",
-  ],
+  sortPackageJson: true,
+  ignorePatterns: [".agents/**"],
 });
