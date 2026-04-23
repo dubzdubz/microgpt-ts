@@ -177,8 +177,10 @@ function ChartTooltipContent({
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
         {payload
-          .filter((item) => item.type !== "none")
           .map((item, index) => {
+            if (item.type === "none") {
+              return
+            }
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
             const indicatorColor = color || item.payload.fill || item.color
@@ -212,9 +214,9 @@ function ChartTooltipContent({
                           )}
                           style={
                             {
-                              "--color-bg": indicatorColor,
-                              "--color-border": indicatorColor,
-                            } as React.CSSProperties
+                              ["--color-bg" as string]: indicatorColor,
+                             [ "--color-border" as string]: indicatorColor,
+                            }
                           }
                         />
                       )
@@ -275,8 +277,10 @@ function ChartLegendContent({
       )}
     >
       {payload
-        .filter((item) => item.type !== "none")
         .map((item) => {
+          if (item.type === "none") {
+            return
+          }
           const key = `${nameKey || item.dataKey || "value"}`
           const itemConfig = getPayloadConfigFromPayload(config, item, key)
 

@@ -1,13 +1,12 @@
 // Autograd: recursive chain rule through a computation graph
 export class Value {
   data: number;
-  grad: number;
+  grad = 0;
   _children: Value[];
   _localGrads: number[];
 
   constructor(data: number, children: Value[] = [], localGrads: number[] = []) {
     this.data = data;
-    this.grad = 0;
     this._children = children;
     this._localGrads = localGrads;
   }
@@ -55,12 +54,12 @@ export class Value {
   backward() {
     const topo: Value[] = [];
     const visited = new Set<Value>();
-    const buildTopo = (v: Value) => {
+    function buildTopo (v: Value) {
       if (visited.has(v)) return;
       visited.add(v);
       for (const child of v._children) buildTopo(child);
       topo.push(v);
-    };
+    }
     buildTopo(this);
     this.grad = 1;
     for (const v of topo.reverse()) {
