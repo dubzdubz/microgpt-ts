@@ -9,44 +9,46 @@
 
 Project documentation lives in docs/. Use it extensively.
 In particular:
-- docs/style-guide.md — code style, Biome rules, naming conventions, TypeScript & React patterns
-- docs/ui-guide.md — UI principles, shadcn-first approach, adding components, design guidelines
 
+- docs/style-guide.md — code style, Oxc rules, naming conventions, TypeScript & React patterns
+- docs/ui-guide.md — UI principles, shadcn-first approach, adding components, design guidelines
 
 ## Web App (`web/`)
 
 ### Stack
 
-| Tool | Purpose |
-|------|---------|
-| [Next.js 16](https://nextjs.org/) | React framework (App Router) |
-| [shadcn/ui](https://ui.shadcn.com/) | UI component library |
-| [Tailwind CSS v4](https://tailwindcss.com/) | Styling |
-| [Base UI](https://base-ui.com/) | Headless primitives (used by shadcn) |
-| [motion](https://motion.dev/) | Animations |
-| [Biome](https://biomejs.dev/) | Linting & formatting (replaces ESLint + Prettier) |
-| [Storybook](https://storybook.js.org/) | Component development & visual testing |
-| [Vitest](https://vitest.dev/) | Unit testing |
-| [pnpm](https://pnpm.io/) | Package manager |
+| Tool                                                    | Purpose                                |
+| ------------------------------------------------------- | -------------------------------------- |
+| [Next.js 16](https://nextjs.org/)                       | React framework (App Router)           |
+| [shadcn/ui](https://ui.shadcn.com/)                     | UI component library                   |
+| [Tailwind CSS v4](https://tailwindcss.com/)             | Styling                                |
+| [Base UI](https://base-ui.com/)                         | Headless primitives (used by shadcn)   |
+| [motion](https://motion.dev/)                           | Animations                             |
+| [Oxlint](https://oxc.rs/docs/guide/usage/linter.html)   | Linting                                |
+| [Oxfmt](https://oxc.rs/docs/guide/usage/formatter.html) | Formatting                             |
+| [Storybook](https://storybook.js.org/)                  | Component development & visual testing |
+| [Vitest](https://vitest.dev/)                           | Unit testing                           |
+| [pnpm](https://pnpm.io/)                                | Package manager                        |
 
 ### Scripts (run from `web/`)
 
 ```bash
 pnpm dev          # Start dev server (localhost:3000)
 pnpm build        # Production build
-pnpm lint         # Biome check
-pnpm lint:fix     # Biome check + auto-fix
+pnpm format       # Format with Oxfmt
+pnpm format:check # Check formatting with Oxfmt
+pnpm lint         # Lint with Oxlint
+pnpm lint:fix     # Auto-fix lint issues with Oxlint
 pnpm storybook    # Storybook (localhost:6006)
 pnpm vitest       # Run unit tests
 ```
 
 ### Key Rules
 
-- Run `pnpm lint:fix` before committing
+- Run `pnpm format && pnpm lint:fix` before committing
 - Add `.stories.tsx` alongside new components
 - Install shadcn components via CLI, never copy-paste: `pnpm dlx shadcn@latest add [component]`
 - Prefer Server Components; add `"use client"` only when necessary
-
 
 ## microgpt lib
 
