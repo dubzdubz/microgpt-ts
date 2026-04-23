@@ -7,8 +7,10 @@
     "dev": "cd web && pnpm dev",
     "build:web": "cd web && pnpm build",
     "storybook": "cd web && pnpm storybook",
-    "lint": "biome check .",
-    "lint:fix": "biome check --write ."
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix"
   },
   "devDependencies": {
     "knip": "^6.6.1",

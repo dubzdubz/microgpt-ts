@@ -6,9 +6,6 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "lint": "cd .. && biome check web/",
-    "lint:fix": "cd .. && biome check --write web/",
-    "format": "cd .. && biome format --write web/",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
