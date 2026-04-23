@@ -4,11 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { type GenerateMode, sliderVal } from "./types";
 
 type GenerateSidebarProps = {
@@ -88,9 +84,7 @@ export function GenerateSidebar({
             <Label className="text-xs">Temperature</Label>
             <HintIcon text="Higher = more random, lower = more confident" />
           </div>
-          <span className="font-mono text-xs text-muted-foreground">
-            {temperature.toFixed(1)}
-          </span>
+          <span className="font-mono text-xs text-muted-foreground">{temperature.toFixed(1)}</span>
         </div>
         <Slider
           min={0}
@@ -104,9 +98,7 @@ export function GenerateSidebar({
 
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <Label
-            className={`text-xs ${isStepByStep ? "text-muted-foreground" : ""}`}
-          >
+          <Label className={`text-xs ${isStepByStep ? "text-muted-foreground" : ""}`}>
             Samples
           </Label>
           <span
@@ -137,9 +129,7 @@ export function GenerateSidebar({
         <Switch
           id="step-by-step"
           checked={isStepByStep}
-          onCheckedChange={(checked) =>
-            onModeChange(checked ? "explore" : "batch")
-          }
+          onCheckedChange={(checked) => onModeChange(checked ? "explore" : "batch")}
         />
       </div>
 
@@ -166,27 +156,15 @@ export function GenerateSidebar({
       <div className="flex flex-col gap-2">
         {isStepByStep ? (
           <>
-            <Button
-              onClick={onNextToken}
-              disabled={exploreDone}
-              className="w-full"
-            >
+            <Button onClick={onNextToken} disabled={exploreDone} className="w-full">
               Next Token
             </Button>
-            <Button
-              variant="outline"
-              onClick={onResetExplore}
-              className="w-full"
-            >
+            <Button variant="outline" onClick={onResetExplore} className="w-full">
               Reset
             </Button>
           </>
         ) : (
-          <Button
-            onClick={onGenerate}
-            disabled={isGenerating}
-            className="w-full"
-          >
+          <Button onClick={onGenerate} disabled={isGenerating} className="w-full">
             {isGenerating ? "Generating\u2026" : "Generate"}
           </Button>
         )}

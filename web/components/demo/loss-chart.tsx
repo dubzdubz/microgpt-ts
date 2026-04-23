@@ -38,16 +38,8 @@ export function LossChart({
             <AreaChart data={data} accessibilityLayer>
               <defs>
                 <linearGradient id="lossGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop
-                    offset="0%"
-                    stopColor="var(--color-loss)"
-                    stopOpacity={0.3}
-                  />
-                  <stop
-                    offset="100%"
-                    stopColor="var(--color-loss)"
-                    stopOpacity={0.02}
-                  />
+                  <stop offset="0%" stopColor="var(--color-loss)" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="var(--color-loss)" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
               <CartesianGrid vertical={false} />
@@ -58,9 +50,7 @@ export function LossChart({
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                tickFormatter={(v: number) =>
-                  v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(v)
-                }
+                tickFormatter={(v: number) => (v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(v))}
               />
               <YAxis
                 orientation="right"
@@ -101,8 +91,7 @@ export function LossChart({
                       cy: number;
                       payload: LossPoint;
                     };
-                    if (payload.evalLoss === undefined)
-                      return <g key={payload.step} />;
+                    if (payload.evalLoss === undefined) return <g key={payload.step} />;
                     return (
                       <motion.circle
                         key={payload.step}
@@ -129,14 +118,7 @@ export function LossChart({
       <div className="flex shrink-0 items-center justify-center gap-5 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <svg width="20" height="8" className="shrink-0">
-            <line
-              x1="0"
-              y1="4"
-              x2="20"
-              y2="4"
-              stroke="var(--chart-1)"
-              strokeWidth="2"
-            />
+            <line x1="0" y1="4" x2="20" y2="4" stroke="var(--chart-1)" strokeWidth="2" />
           </svg>
           Train
         </span>

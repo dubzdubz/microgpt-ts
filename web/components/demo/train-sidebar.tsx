@@ -40,9 +40,7 @@ function sliderToLr(v: number): number {
 }
 
 function lrToSlider(lr: number): number {
-  return Math.round(
-    ((Math.log10(lr) - LR_LOG_MIN) / (LR_LOG_MAX - LR_LOG_MIN)) * 100,
-  );
+  return Math.round(((Math.log10(lr) - LR_LOG_MIN) / (LR_LOG_MAX - LR_LOG_MIN)) * 100);
 }
 
 function SelectField({
@@ -65,11 +63,7 @@ function SelectField({
       <Label htmlFor={id} className="text-xs">
         {label}
       </Label>
-      <Select
-        value={String(value)}
-        onValueChange={(v) => onChange(Number(v))}
-        disabled={disabled}
-      >
+      <Select value={String(value)} onValueChange={(v) => onChange(Number(v))} disabled={disabled}>
         <SelectTrigger id={id} className="h-8 text-xs">
           <SelectValue />
         </SelectTrigger>
@@ -93,11 +87,7 @@ function ConfigFields({
   onTrainingChange,
 }: Pick<
   TrainSidebarProps,
-  | "modelConfig"
-  | "trainingConfig"
-  | "disabled"
-  | "onModelChange"
-  | "onTrainingChange"
+  "modelConfig" | "trainingConfig" | "disabled" | "onModelChange" | "onTrainingChange"
 >) {
   return (
     <>
@@ -251,11 +241,7 @@ export function TrainSidebar({
           </Button>
         )}
         {isTrained && (
-          <Button
-            variant="outline"
-            onClick={onSwitchToGenerate}
-            className="hidden md:flex w-full"
-          >
+          <Button variant="outline" onClick={onSwitchToGenerate} className="hidden md:flex w-full">
             Generate &rarr;
           </Button>
         )}

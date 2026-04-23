@@ -11,11 +11,7 @@ const makeProbs = (peakIdx: number) => {
   return raw.map((v) => v / total);
 };
 
-const makeStep = (
-  posId: number,
-  tokenId: number,
-  prevTokens: number[],
-): InferenceStep => ({
+const makeStep = (posId: number, tokenId: number, prevTokens: number[]): InferenceStep => ({
   posId,
   probs: makeProbs(tokenId),
   tokenId,

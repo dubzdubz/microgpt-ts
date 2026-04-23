@@ -30,9 +30,7 @@ export function TrainTab({
   if (status === "idle") {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
-        <p className="text-muted-foreground">
-          Configure hyperparameters, then start training.
-        </p>
+        <p className="text-muted-foreground">Configure hyperparameters, then start training.</p>
       </div>
     );
   }
