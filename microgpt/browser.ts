@@ -20,10 +20,7 @@ export function snapshotWeights(sd: StateDict): NumericStateDict {
 export function restoreStateDict(snap: NumericStateDict): StateDict {
   const out: Record<string, unknown> = {};
   for (const k of Object.keys(snap))
-    out[k] = mapLeaves(
-      snap[k as keyof NumericStateDict],
-      (n) => new Value(n as number),
-    );
+    out[k] = mapLeaves(snap[k as keyof NumericStateDict], (n) => new Value(n as number));
   return out as StateDict;
 }
 

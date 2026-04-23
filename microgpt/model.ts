@@ -62,10 +62,7 @@ export type StateDict = {
   lm_head: Value[][];
 };
 
-export function initStateDict(
-  vocabSize: number,
-  config: ModelConfig = DEFAULT_CONFIG,
-): StateDict {
+export function initStateDict(vocabSize: number, config: ModelConfig = DEFAULT_CONFIG): StateDict {
   const { nEmbd, nLayer, blockSize } = config;
   return {
     wte: gaussianMatrix(vocabSize, nEmbd),
@@ -133,14 +130,10 @@ function gpt(
       const hStart = h * headDim;
       const qH = q.slice(hStart, hStart + headDim);
       const kH = keys[layer].map((key) => key.slice(hStart, hStart + headDim));
-      const vH = values[layer].map((value) =>
-        value.slice(hStart, hStart + headDim),
-      );
+      const vH = values[layer].map((value) => value.slice(hStart, hStart + headDim));
       const attnLogits = kH.map((k) => dotProduct(qH, k).div(headDim ** 0.5));
       const attnWeights = softmax(attnLogits);
-      const headOut = transpose(vH).map((value) =>
-        dotProduct(attnWeights, value),
-      );
+      const headOut = transpose(vH).map((value) => dotProduct(attnWeights, value));
       xAttn.push(...headOut);
     }
     x = linear(xAttn, stateDict.attn_wo[layer]);
@@ -208,8 +201,7 @@ export function* inferenceStepwise(
 
   for (let posId = prefixTokens.length; posId < config.blockSize; posId++) {
     const logits = gpt(stateDict, tokenId, posId, keys, values, config);
-    const scaled =
-      temperature === 0 ? logits : logits.map((l) => l.div(temperature));
+    const scaled = temperature === 0 ? logits : logits.map((l) => l.div(temperature));
     const probs = softmax(scaled).map((p) => p.data);
     const nextId =
       temperature === 0
@@ -231,13 +223,7 @@ export function inference(
   prefixTokens: number[] = [],
 ): string {
   let tokens: number[] = [];
-  for (const step of inferenceStepwise(
-    stateDict,
-    tokenizer,
-    temperature,
-    config,
-    prefixTokens,
-  )) {
+  for (const step of inferenceStepwise(stateDict, tokenizer, temperature, config, prefixTokens)) {
     tokens = step.prevTokens;
   }
   return tokenizer.decode(tokens);

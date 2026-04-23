@@ -24,22 +24,19 @@ export default function HomePage() {
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,var(--color-background)_60%,transparent_100%)] sm:bg-[radial-gradient(ellipse_50%_45%_at_50%_50%,var(--color-background)_60%,transparent_100%)]" />
 
       <div className="relative z-10 flex max-w-xl flex-col items-center gap-8 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-          microgpt-ts
-        </h1>
+        <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">microgpt-ts</h1>
 
         <p className="text-lg text-muted-foreground">
-          A complete GPT built from scratch in TypeScript. Zero dependencies.
-          Runs directly in your browser.
+          A complete GPT built from scratch in TypeScript. Zero dependencies. Runs directly in your
+          browser.
         </p>
 
         <Separator className="w-24" />
 
         <p className="text-sm leading-relaxed text-muted-foreground">
-          GPT-2-like architecture with tokenizer, autograd, multi-head
-          attention, and Adam optimizer. Training &amp; inference in ~500 lines
-          of readable code. Train a model and generate text right here in your
-          browser.
+          GPT-2-like architecture with tokenizer, autograd, multi-head attention, and Adam
+          optimizer. Training &amp; inference in ~500 lines of readable code. Train a model and
+          generate text right here in your browser.
         </p>
 
         <p className="text-xs text-muted-foreground/60">

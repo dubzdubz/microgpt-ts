@@ -29,8 +29,7 @@ export function DatasetSidebar({
       {all.map((preset) => {
         const Icon = preset.icon;
         const active = selectedId === preset.id;
-        const count =
-          preset.id === CUSTOM_PRESET_ID ? null : wordCountFor(preset.words);
+        const count = preset.id === CUSTOM_PRESET_ID ? null : wordCountFor(preset.words);
         return (
           <button
             key={preset.id}
@@ -63,11 +62,7 @@ export function DatasetSidebar({
       })}
 
       <div className="pt-4">
-        <Button
-          onClick={onTrain}
-          disabled={disabled || wordCount === 0}
-          className="w-full"
-        >
+        <Button onClick={onTrain} disabled={disabled || wordCount === 0} className="w-full">
           Train on this dataset
         </Button>
       </div>

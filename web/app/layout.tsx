@@ -10,8 +10,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "microgpt",
-  description:
-    "A complete GPT built from scratch with zero runtime dependencies.",
+  description: "A complete GPT built from scratch with zero runtime dependencies.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

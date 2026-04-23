@@ -1,10 +1,4 @@
-import {
-  DEFAULT_CONFIG,
-  forward,
-  getParams,
-  type ModelConfig,
-  type StateDict,
-} from "./model";
+import { DEFAULT_CONFIG, forward, getParams, type ModelConfig, type StateDict } from "./model";
 
 export type AdamConfig = {
   learningRate: number;

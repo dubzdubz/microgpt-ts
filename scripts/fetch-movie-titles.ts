@@ -49,9 +49,7 @@ SELECT ?title WHERE {
 LIMIT ${LIMIT}
 `.trim();
 
-const url =
-  "https://query.wikidata.org/sparql?format=json&query=" +
-  encodeURIComponent(query);
+const url = "https://query.wikidata.org/sparql?format=json&query=" + encodeURIComponent(query);
 
 const res = await fetch(url, {
   headers: {
@@ -65,7 +63,7 @@ if (!res.ok) {
   throw new Error(`Wikidata query failed: ${res.status} ${res.statusText}`);
 }
 
-const data: SparqlResponse = (await res.json());
+const data: SparqlResponse = await res.json();
 const raw = data.results.bindings
   .map((b) => b.title?.value)
   .filter((v): v is string => typeof v === "string");

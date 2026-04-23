@@ -16,9 +16,7 @@ export function DatasetTab({
   return (
     <Textarea
       value={isCustom ? customText : datasetText}
-      onChange={
-        isCustom ? (e) => onCustomTextChange(e.target.value) : undefined
-      }
+      onChange={isCustom ? (e) => onCustomTextChange(e.target.value) : undefined}
       readOnly={!isCustom}
       className="min-h-0 flex-1 field-sizing-fixed overflow-y-auto rounded-lg font-mono text-sm resize-none"
       placeholder={isCustom ? "Enter words, one per line..." : ""}

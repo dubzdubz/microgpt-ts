@@ -3,8 +3,7 @@ import { dirname } from "node:path";
 import { shuffle } from "../microgpt/utils";
 import { toTsArrayFile } from "./utils";
 
-const URL =
-  "https://raw.githubusercontent.com/karpathy/makemore/988aa59/names.txt";
+const URL = "https://raw.githubusercontent.com/karpathy/makemore/988aa59/names.txt";
 const OUTPUT_PATH = "./datasets/baby-names.ts";
 const SAMPLE_SIZE = 1000;
 

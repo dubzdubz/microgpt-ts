@@ -4,19 +4,16 @@ const EMA_ALPHA = 0.1;
 
 // Math helpers ------------------------------------------------------------
 
-export const sum = (arr: Value[]): Value =>
-  arr.reduce((a, b) => a.add(b), new Value(0));
+export const sum = (arr: Value[]): Value => arr.reduce((a, b) => a.add(b), new Value(0));
 
 export const mean = (arr: Value[]): Value => sum(arr).div(arr.length);
 
 export const linear = (x: Value[], w: Value[][]): Value[] =>
   w.map((wo) => sum(wo.map((wi, i) => wi.mul(x[i]))));
 
-export const dotProduct = (a: Value[], b: Value[]): Value =>
-  sum(a.map((ai, i) => ai.mul(b[i])));
+export const dotProduct = (a: Value[], b: Value[]): Value => sum(a.map((ai, i) => ai.mul(b[i])));
 
-export const vectorAdd = (a: Value[], b: Value[]): Value[] =>
-  a.map((ai, i) => ai.add(b[i]));
+export const vectorAdd = (a: Value[], b: Value[]): Value[] => a.map((ai, i) => ai.add(b[i]));
 
 export const transpose = (matrix: Value[][]): Value[][] =>
   matrix[0].map((_, i) => matrix.map((row) => row[i]));
@@ -47,11 +44,7 @@ export function randomGaussian(mean = 0, std = 1): number {
   return mean + std * z;
 }
 
-export const gaussianMatrix = (
-  nout: number,
-  nin: number,
-  std = 0.08,
-): Value[][] =>
+export const gaussianMatrix = (nout: number, nin: number, std = 0.08): Value[][] =>
   Array.from({ length: nout }, () =>
     Array.from({ length: nin }, () => new Value(randomGaussian(0, std))),
   );
@@ -61,8 +54,7 @@ export const gaussianMatrixList = (
   nin: number,
   nLayers: number,
   std = 0.08,
-): Value[][][] =>
-  Array.from({ length: nLayers }, () => gaussianMatrix(nout, nin, std));
+): Value[][][] => Array.from({ length: nLayers }, () => gaussianMatrix(nout, nin, std));
 
 // Fisher-Yates shuffle (in-place)
 export function shuffle<T>(arr: T[]): T[] {
@@ -84,10 +76,7 @@ export function parseDocs(text: string): string[] {
   return shuffle(docs);
 }
 
-export function splitDocs(
-  docs: string[],
-  evalFraction = 0.1,
-): { train: string[]; eval: string[] } {
+export function splitDocs(docs: string[], evalFraction = 0.1): { train: string[]; eval: string[] } {
   const nEval = Math.max(1, Math.round(docs.length * evalFraction));
   const shuffled = shuffle(docs);
   return {
@@ -98,5 +87,4 @@ export function splitDocs(
 
 // Other helpers ------------------------------------------------------------
 
-export const init2dList = <T>(count: number): T[][] =>
-  Array.from({ length: count }, () => []);
+export const init2dList = <T>(count: number): T[][] => Array.from({ length: count }, () => []);

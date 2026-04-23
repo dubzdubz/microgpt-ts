@@ -5,11 +5,11 @@ export class Value {
   _children: Value[];
   _localGrads: number[];
 
-  constructor(data: number, children: Value[] = [], localGrads: number[] = []) {
-    this.data = data;
-    this._children = children;
-    this._localGrads = localGrads;
-  }
+  constructor(
+    public data: number,
+    public children: Value[] = [],
+    public localGrads: number[] = [],
+  ) {}
 
   add(other: Value | number): Value {
     const o = other instanceof Value ? other : new Value(other);
@@ -54,7 +54,7 @@ export class Value {
   backward() {
     const topo: Value[] = [];
     const visited = new Set<Value>();
-    function buildTopo (v: Value) {
+    function buildTopo(v: Value) {
       if (visited.has(v)) return;
       visited.add(v);
       for (const child of v._children) buildTopo(child);

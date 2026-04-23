@@ -1,16 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import {
-  buildTokenizer,
-  getParams,
-  inference,
-  initStateDict,
-} from "../microgpt/model";
-import {
-  DEFAULT_ADAM_CONFIG,
-  initAdamState,
-  trainStep,
-} from "../microgpt/train";
+import { buildTokenizer, getParams, inference, initStateDict } from "../microgpt/model";
+import { DEFAULT_ADAM_CONFIG, initAdamState, trainStep } from "../microgpt/train";
 import { emaSmooth, parseDocs } from "../microgpt/utils";
 
 const DATASET_URL =
@@ -47,14 +38,7 @@ const startTime = Date.now();
 let smoothLoss: number | undefined;
 for (let step = 0; step < TRAIN_STEPS; step++) {
   const tokens = tokenizer.encode(docs[step % docs.length]);
-  const info = trainStep(
-    stateDict,
-    adamState,
-    tokens,
-    step,
-    TRAIN_STEPS,
-    DEFAULT_ADAM_CONFIG,
-  );
+  const info = trainStep(stateDict, adamState, tokens, step, TRAIN_STEPS, DEFAULT_ADAM_CONFIG);
   smoothLoss = emaSmooth(smoothLoss, info.loss);
   if (step < 5 || step % 200 === 0) {
     console.log(
@@ -66,7 +50,5 @@ console.log(`training time: ${((Date.now() - startTime) / 1000).toFixed(2)}s`);
 
 console.log("\n--- inference (new, hallucinated names) ---");
 for (let i = 0; i < NUM_SAMPLES; i++) {
-  console.log(
-    `sample ${String(i + 1).padStart(2)}: ${inference(stateDict, tokenizer)}`,
-  );
+  console.log(`sample ${String(i + 1).padStart(2)}: ${inference(stateDict, tokenizer)}`);
 }
