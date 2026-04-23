@@ -65,7 +65,7 @@ if (!res.ok) {
   throw new Error(`Wikidata query failed: ${res.status} ${res.statusText}`);
 }
 
-const data = (await res.json()) as SparqlResponse;
+const data: SparqlResponse = (await res.json());
 const raw = data.results.bindings
   .map((b) => b.title?.value)
   .filter((v): v is string => typeof v === "string");
@@ -73,7 +73,7 @@ const raw = data.results.bindings
 const cleaned = uniq(
   raw
     .map((t) => normalize(t.replace(/\s+/g, " ").trim()).toLowerCase())
-    .filter((t) => t.length > 0)
+    .filter((t) => t)
     .filter((t) => !t.includes("\n"))
     .filter((t) => t.length <= MAX_LEN)
     .filter((t) => !t.toLowerCase().startsWith("list of "))
@@ -81,6 +81,6 @@ const cleaned = uniq(
 ).sort((a, b) => a.localeCompare(b));
 
 mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
-writeFileSync(OUTPUT_PATH, toTsArrayFile("movieTitles", cleaned), "utf-8");
+writeFileSync(OUTPUT_PATH, toTsArrayFile("movieTitles", cleaned));
 
 console.log(`Wrote ${cleaned.length} titles to ${OUTPUT_PATH}`);

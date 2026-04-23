@@ -17,7 +17,7 @@ const text = await res.text();
 const allNames = text
   .split("\n")
   .map((n) => n.trim().toLowerCase())
-  .filter((n) => n.length > 0);
+  .filter((n) => n);
 
 console.log(`Fetched ${allNames.length} names total`);
 
@@ -26,6 +26,6 @@ const sampled = shuffle(allNames.slice())
   .sort((a, b) => a.localeCompare(b));
 
 mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
-writeFileSync(OUTPUT_PATH, toTsArrayFile("babyNames", sampled), "utf-8");
+writeFileSync(OUTPUT_PATH, toTsArrayFile("babyNames", sampled));
 
 console.log(`Wrote ${sampled.length} names to ${OUTPUT_PATH}`);

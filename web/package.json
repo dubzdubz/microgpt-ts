@@ -30,7 +30,6 @@
   },
   "devDependencies": {
     "babel-plugin-react-compiler": "^1.0.0",
-    "@biomejs/biome": "^2.4.2",
     "@chromatic-com/storybook": "^5.0.1",
     "@storybook/addon-a11y": "^10.2.8",
     "@storybook/addon-docs": "^10.2.8",
