@@ -83,14 +83,14 @@ web/                       Next.js interactive playground
 
 The [blog post](https://karpathy.github.io/2026/02/12/microgpt/) describes building the model up in layers, one component at a time. This repo follows the same progression — each step is a separate PR:
 
-| Step | What it adds | PR |
-|------|--------------|----|
-| train0 | Bigram count table — no neural net, no gradients | [#1](https://github.com/dubzdubz/microgpt-ts/pull/1) |
-| train1 | MLP + manual gradients (numerical & analytic) + SGD | [#2](https://github.com/dubzdubz/microgpt-ts/pull/2) |
-| train2 | Autograd (`Value` class) — replaces manual gradients | [#3](https://github.com/dubzdubz/microgpt-ts/pull/3) |
+| Step   | What it adds                                                      | PR                                                   |
+| ------ | ----------------------------------------------------------------- | ---------------------------------------------------- |
+| train0 | Bigram count table — no neural net, no gradients                  | [#1](https://github.com/dubzdubz/microgpt-ts/pull/1) |
+| train1 | MLP + manual gradients (numerical & analytic) + SGD               | [#2](https://github.com/dubzdubz/microgpt-ts/pull/2) |
+| train2 | Autograd (`Value` class) — replaces manual gradients              | [#3](https://github.com/dubzdubz/microgpt-ts/pull/3) |
 | train3 | Position embeddings + single-head attention + RMSNorm + residuals | [#4](https://github.com/dubzdubz/microgpt-ts/pull/4) |
-| train4 | Multi-head attention + layer loop — full GPT architecture | [#5](https://github.com/dubzdubz/microgpt-ts/pull/5) |
-| train5 | Adam optimizer | [#6](https://github.com/dubzdubz/microgpt-ts/pull/6) |
+| train4 | Multi-head attention + layer loop — full GPT architecture         | [#5](https://github.com/dubzdubz/microgpt-ts/pull/5) |
+| train5 | Adam optimizer                                                    | [#6](https://github.com/dubzdubz/microgpt-ts/pull/6) |
 
 Each step is also tagged (`step-1-bigram` through `step-6-microgpt-completed`) so you can [browse the snapshots on GitHub](https://github.com/dubzdubz/microgpt-ts/tags) or checkout any one locally: `git checkout step-2-mlp`.
 
@@ -103,14 +103,16 @@ pnpm demo          # Run CLI demo (train + generate)
 pnpm dev           # Start web dev server (localhost:3000)
 pnpm build:web     # Production build
 pnpm storybook     # Component stories (localhost:6006)
-pnpm lint          # Check with Biome
-pnpm lint:fix      # Auto-fix with Biome
+pnpm format        # Format with Oxfmt
+pnpm format:check  # Check formatting with Oxfmt
+pnpm lint          # Check with Oxlint
+pnpm lint:fix      # Auto-fix lint issues with Oxlint
 ```
 
-The web app uses Next.js 16, shadcn/ui, Tailwind CSS v4, and Biome for linting/formatting. See [`AGENTS.md`](AGENTS.md) for coding conventions.
+The web app uses Next.js 16, shadcn/ui, Tailwind CSS v4, Oxfmt for formatting, and Oxlint for linting. See [`AGENTS.md`](AGENTS.md) for coding conventions.
 
 ## Credits
 
-Direct port of Karpathy's [microgpt.py](https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95), which accompanies his blog post [*microgpt*](https://karpathy.github.io/2026/02/12/microgpt/). As he puts it:
+Direct port of Karpathy's [microgpt.py](https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95), which accompanies his blog post [_microgpt_](https://karpathy.github.io/2026/02/12/microgpt/). As he puts it:
 
-> *The most atomic way to train and run inference for a GPT in pure, dependency-free Python. This file is the complete algorithm. Everything else is just efficiency.*
+> _The most atomic way to train and run inference for a GPT in pure, dependency-free Python. This file is the complete algorithm. Everything else is just efficiency._
