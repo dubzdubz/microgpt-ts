@@ -97,8 +97,7 @@ export function ExploreView({
 
       <div className="flex flex-col gap-2">
         <p className={SECTION_LABEL}>
-          Token probabilities{" "}
-          <span className="font-normal">— position {totalChars}</span>
+          Token probabilities <span className="font-normal">— position {totalChars}</span>
         </p>
         <TokenProbChart
           probs={lastStep.probs}
@@ -106,8 +105,8 @@ export function ExploreView({
           vocabLabels={vocabLabels}
         />
         <p className="text-xs text-muted-foreground">
-          Each bar shows the probability the model assigns to each character.
-          The highlighted bar was sampled.
+          Each bar shows the probability the model assigns to each character. The highlighted bar
+          was sampled.
         </p>
       </div>
     </div>

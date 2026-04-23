@@ -4,11 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import type { TrainWorkerIn, TrainWorkerOut } from "../../../microgpt/browser";
-import {
-  DEFAULT_CONFIG,
-  type InferenceStep,
-  type ModelConfig,
-} from "../../../microgpt/model";
+import { DEFAULT_CONFIG, type InferenceStep, type ModelConfig } from "../../../microgpt/model";
 import { DatasetSidebar } from "./dataset-sidebar";
 import { DatasetTab } from "./dataset-tab";
 import { GenerateSidebar } from "./generate-sidebar";
@@ -78,9 +74,7 @@ export function TrainDemo() {
       ? customText
       : (PRESETS.find((p) => p.id === selectedPresetId)?.words ?? "");
 
-  const wordCount = datasetText
-    .split("\n")
-    .filter((l) => l.trim().length > 0).length;
+  const wordCount = datasetText.split("\n").filter((l) => l.trim()).length;
 
   const trainWorkerRef = useRef<Worker | null>(null);
   const evalWorkerRef = useRef<Worker | null>(null);
@@ -126,13 +120,9 @@ export function TrainDemo() {
     lossBufferRef.current = [];
     evalStepMapRef.current = {};
 
-    const evalWorker = new Worker(
-      new URL("../../workers/eval-worker.ts", import.meta.url),
-    );
+    const evalWorker = new Worker(new URL("../../workers/eval-worker.ts", import.meta.url));
     evalWorkerRef.current = evalWorker;
-    evalWorker.onmessage = (
-      e: MessageEvent<{ id: number; avgLoss: number }>,
-    ) => {
+    evalWorker.onmessage = (e: MessageEvent<{ id: number; avgLoss: number }>) => {
       const { id, avgLoss } = e.data;
       const step = evalStepMapRef.current[id];
       if (step === undefined) return;
@@ -143,9 +133,7 @@ export function TrainDemo() {
       setLossHistory([...lossBufferRef.current]);
     };
 
-    const trainWorker = new Worker(
-      new URL("../../workers/train-worker.ts", import.meta.url),
-    );
+    const trainWorker = new Worker(new URL("../../workers/train-worker.ts", import.meta.url));
     trainWorkerRef.current = trainWorker;
     trainWorker.onmessage = (e: MessageEvent<TrainWorkerOut>) => {
       const msg = e.data;
@@ -169,9 +157,7 @@ export function TrainDemo() {
         case "live-gen":
           setLiveGenEntries((prev) => {
             const next = [...prev, { step: msg.step, words: msg.words }];
-            return next.length > MAX_LIVE_GEN
-              ? next.slice(next.length - MAX_LIVE_GEN)
-              : next;
+            return next.length > MAX_LIVE_GEN ? next.slice(next.length - MAX_LIVE_GEN) : next;
           });
           break;
 
@@ -200,10 +186,7 @@ export function TrainDemo() {
 
         case "explore-step":
           setExploreSteps((prev) => [...prev, msg.step]);
-          if (
-            tokenizerInfoRef.current &&
-            msg.step.tokenId === tokenizerInfoRef.current.BOS
-          ) {
+          if (tokenizerInfoRef.current && msg.step.tokenId === tokenizerInfoRef.current.BOS) {
             setExploreDone(true);
           }
           break;
@@ -257,13 +240,7 @@ export function TrainDemo() {
     } else {
       sendTrain({ type: "explore-next" });
     }
-  }, [
-    temperature,
-    encodePrefixTokens,
-    exploreSteps.length,
-    exploreDone,
-    sendTrain,
-  ]);
+  }, [temperature, encodePrefixTokens, exploreSteps.length, exploreDone, sendTrain]);
 
   const handleResetExplore = useCallback(() => {
     sendTrain({ type: "explore-reset" });
@@ -336,10 +313,7 @@ export function TrainDemo() {
             isGenerating={isGenerating}
             exploreDone={exploreDone}
             prefix={prefix}
-            maxPrefixLength={
-              (tokenizerInfoRef.current?.blockSize ??
-                DEFAULT_CONFIG.blockSize) - 1
-            }
+            maxPrefixLength={(tokenizerInfoRef.current?.blockSize ?? DEFAULT_CONFIG.blockSize) - 1}
             allowedChars={tokenizerInfoRef.current?.chars ?? []}
             onModeChange={setGenerateMode}
             onTemperatureChange={setTemperature}
@@ -392,9 +366,7 @@ export function TrainDemo() {
                 exploreSteps={exploreSteps}
                 exploreDone={exploreDone}
                 vocabLabels={
-                  tokenizerInfoRef.current
-                    ? [...tokenizerInfoRef.current.chars, "·"]
-                    : []
+                  tokenizerInfoRef.current ? [...tokenizerInfoRef.current.chars, "·"] : []
                 }
                 BOS={tokenizerInfoRef.current?.BOS ?? 0}
                 prefixChars={[...prefix]}

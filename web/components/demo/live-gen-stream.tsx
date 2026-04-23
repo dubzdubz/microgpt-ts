@@ -29,15 +29,10 @@ export function LiveGenStream({
         className="flex-1 min-h-0 overflow-y-auto rounded-lg border bg-muted/30 p-3"
       >
         {entries.length === 0 && (
-          <p className="text-xs text-muted-foreground/50 font-mono">
-            Waiting for samples…
-          </p>
+          <p className="text-xs text-muted-foreground/50 font-mono">Waiting for samples…</p>
         )}
         {entries.map((entry) => (
-          <div
-            key={entry.step}
-            className="flex gap-3 font-mono text-xs leading-relaxed"
-          >
+          <div key={entry.step} className="flex gap-3 font-mono text-xs leading-relaxed">
             <span className="shrink-0 text-muted-foreground/50 tabular-nums">
               Step {entry.step}
             </span>

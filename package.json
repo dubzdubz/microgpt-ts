@@ -13,8 +13,10 @@
     "lint:fix": "oxlint --fix"
   },
   "devDependencies": {
-    "knip": "^6.6.1",
     "@types/node": "^25.2.3",
+    "knip": "^6.6.1",
+    "oxfmt": "^0.46.0",
+    "oxlint": "^1.61.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
   }

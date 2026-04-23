@@ -41,9 +41,7 @@ export function GenerateTab({
   if (status !== "trained") {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
-        <p className="text-muted-foreground">
-          Train the model first to generate new words.
-        </p>
+        <p className="text-muted-foreground">Train the model first to generate new words.</p>
         <Button variant="outline" onClick={onSwitchToTrain}>
           Go to Train
         </Button>
@@ -66,9 +64,7 @@ export function GenerateTab({
   if (output.length === 0 && !isGenerating) {
     return (
       <div className="flex items-center justify-center rounded-lg border border-dashed py-16">
-        <p className="text-sm text-muted-foreground">
-          Click Generate to create new words
-        </p>
+        <p className="text-sm text-muted-foreground">Click Generate to create new words</p>
       </div>
     );
   }
